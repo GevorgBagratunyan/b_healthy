@@ -1,12 +1,10 @@
 package com.blueteam.tracker.entity;
 
-import com.blueteam.tracker.entity.observer.ObservedPatient;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "hemodynamica")
+@Table(name = "hemodynamica", schema = "tracker")
 public class Hemodynamica {
 
     @Id

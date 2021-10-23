@@ -1,8 +1,7 @@
-package com.blueteam.tracker.entity.observer;
+package com.blueteam.tracker.entity;
 
-import com.blueteam.tracker.entity.Doctor;
-import com.blueteam.tracker.entity.Hemodynamica;
-import com.blueteam.tracker.entity.Patient;
+import com.blueteam.tracker.entity.observer.Observed;
+import com.blueteam.tracker.entity.observer.Observer;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,17 +9,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "obs_patient")
-public class ObservedPatient implements Observed{
+@Table(name = "obs_patient", schema = "tracker")
+public class ObservedPatient implements Observed {
 
     @Id
     @Column(name = "patient_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @MapsId //Ids of ObservedPatient and Patient is the same
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
+    @Column(name = "object_id")
+    private Long objId;
 
     @ManyToMany(mappedBy = "observedPatients")
     private List<ObserverDoctor> observerDoctors = new ArrayList<>();
@@ -31,25 +28,25 @@ public class ObservedPatient implements Observed{
 
     @Override
     public void addObserver(Observer observer) {
-        patient.getDoctors().add((Doctor) observer);
+        observerDoctors.add((ObserverDoctor) observer);
     }
 
     @Override
     public void removeObserver(Observer observer) {
-        patient.getDoctors().add((Doctor) observer);
+        observerDoctors.remove((ObserverDoctor) observer);
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(String msg) {
         Hemodynamica avg = calculateAvgHemodynamica();
         for (Observer d : observerDoctors) {
-            d.handleEvent(avg, id);
+            d.handleEvent(avg, id, msg);
         }
         hemodynamics.clear();
     }
 
-    private void RedAlert() {
-        notifyObservers();
+    private void redAlert() {
+        notifyObservers("WARNING!!! Red Alert from patient, call 911");
     }
 
     //Notifies all observing doctors when hemodynamic parameters are dangerous
@@ -61,7 +58,8 @@ public class ObservedPatient implements Observed{
         } else return; //do not check isDangerous if size<10
         //if already collected 10 parameters, check danger level
         if (isDangerous()) {
-            notifyObservers();
+            String msg = "Hemodynamic parameters are dangerous";
+            notifyObservers(msg);
         }
     }
 
@@ -94,14 +92,6 @@ public class ObservedPatient implements Observed{
         this.id = id;
     }
 
-    public Patient getPatient() {
-        return patient;
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
     public List<ObserverDoctor> getObserverDoctors() {
         return observerDoctors;
     }
@@ -116,6 +106,14 @@ public class ObservedPatient implements Observed{
 
     public void setHemodynamics(List<Hemodynamica> hemodynamics) {
         this.hemodynamics = hemodynamics;
+    }
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 
     @Override
@@ -135,7 +133,6 @@ public class ObservedPatient implements Observed{
     public String toString() {
         return "ObservedPatient{" +
                 "id=" + id +
-                ", patient=" + patient +
                 ", observerDoctors=" + observerDoctors +
                 '}';
     }

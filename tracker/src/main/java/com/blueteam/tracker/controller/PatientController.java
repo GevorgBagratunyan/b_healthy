@@ -1,7 +1,7 @@
 package com.blueteam.tracker.controller;
 
 import com.blueteam.tracker.entity.Hemodynamica;
-import com.blueteam.tracker.service.PatientService;
+import com.blueteam.tracker.service.ObservedPatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/patient")
 public class PatientController {
 
-    private final PatientService patientService;
+    private final ObservedPatientService patientService;
 
-    public PatientController(PatientService patientService) {
+    public PatientController(ObservedPatientService patientService) {
         this.patientService = patientService;
     }
 

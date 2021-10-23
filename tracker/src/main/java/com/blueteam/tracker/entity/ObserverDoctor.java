@@ -1,7 +1,6 @@
-package com.blueteam.tracker.entity.observer;
+package com.blueteam.tracker.entity;
 
-import com.blueteam.tracker.entity.Doctor;
-import com.blueteam.tracker.entity.Hemodynamica;
+import com.blueteam.tracker.entity.observer.Observer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,17 +10,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "obs_doctor")
-public class ObserverDoctor implements Observer{
+@Table(name = "obs_doctor", schema = "tracker")
+public class ObserverDoctor implements Observer {
 
     @Id
     @Column(name = "doctor_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @MapsId //Ids of Doctor And ObserverDoctor is the same
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
+    @Column(name = "object_id")
+    private Long obj_id;
 
     @ManyToMany
     @JoinTable(name = "obs_doctor_obs_patient",
@@ -30,14 +27,14 @@ public class ObserverDoctor implements Observer{
     private List<ObservedPatient> observedPatients = new ArrayList<>();
 
     @Override
-    public void handleEvent(Hemodynamica hemodynamica, Long patientId) {
+    public void handleEvent(Hemodynamica hemodynamica, Long patientId, String msg) {
         System.out.println("Sending alert to NOTIFIER module");
         Integer heartRateAVG = hemodynamica.getHeartRate();
         Integer saturationAVG = hemodynamica.getSaturation();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         LocalDateTime alertTime = LocalDateTime.now();
-        System.err.println("Sending Email to doctor: " + this.doctor.getName()+ "...");
-        System.err.println("Heart Rate is: " + heartRateAVG + ", Saturation is: " + saturationAVG);
+        System.err.println("Sending Email to doctor: " + this.id + "...");
+        System.err.println(msg + ", Heart Rate is: " + heartRateAVG + ", Saturation is: " + saturationAVG);
         System.err.println(dtf.format(alertTime));
     }
 
@@ -49,20 +46,20 @@ public class ObserverDoctor implements Observer{
         this.id = id;
     }
 
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
-
     public List<ObservedPatient> getObservedPatients() {
         return observedPatients;
     }
 
     public void setObservedPatients(List<ObservedPatient> observedPatients) {
         this.observedPatients = observedPatients;
+    }
+
+    public Long getObj_id() {
+        return obj_id;
+    }
+
+    public void setObj_id(Long obj_id) {
+        this.obj_id = obj_id;
     }
 
     @Override
@@ -82,7 +79,6 @@ public class ObserverDoctor implements Observer{
     public String toString() {
         return "ObserverDoctor{" +
                 "id=" + id +
-                ", doctor=" + doctor +
                 ", observedPatients=" + observedPatients +
                 '}';
     }
