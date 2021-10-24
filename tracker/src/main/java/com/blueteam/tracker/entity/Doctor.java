@@ -10,21 +10,21 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "obs_doctor", schema = "tracker")
-public class ObserverDoctor implements Observer {
+@Table(name = "doctor")
+public class Doctor implements Observer {
 
     @Id
-    @Column(name = "doctor_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "object_id")
     private Long obj_id;
 
     @ManyToMany
-    @JoinTable(name = "obs_doctor_obs_patient",
-    joinColumns = @JoinColumn(name = "obs_doctor_id"),
-    inverseJoinColumns = @JoinColumn(name = "obs_patient_id"))
-    private List<ObservedPatient> observedPatients = new ArrayList<>();
+    @JoinTable(name = "doctor_patient",
+    joinColumns = @JoinColumn(name = "doctor_id"),
+    inverseJoinColumns = @JoinColumn(name = "patient_id"))
+    private List<Patient> patients = new ArrayList<>();
 
     @Override
     public void handleEvent(Hemodynamica hemodynamica, Long patientId, String msg) {
@@ -46,12 +46,12 @@ public class ObserverDoctor implements Observer {
         this.id = id;
     }
 
-    public List<ObservedPatient> getObservedPatients() {
-        return observedPatients;
+    public List<Patient> getPatients() {
+        return patients;
     }
 
-    public void setObservedPatients(List<ObservedPatient> observedPatients) {
-        this.observedPatients = observedPatients;
+    public void setPatients(List<Patient> patients) {
+        this.patients = patients;
     }
 
     public Long getObj_id() {
@@ -66,7 +66,7 @@ public class ObserverDoctor implements Observer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ObserverDoctor that = (ObserverDoctor) o;
+        Doctor that = (Doctor) o;
         return Objects.equals(id, that.id);
     }
 
@@ -77,9 +77,9 @@ public class ObserverDoctor implements Observer {
 
     @Override
     public String toString() {
-        return "ObserverDoctor{" +
+        return "Doctor{" +
                 "id=" + id +
-                ", observedPatients=" + observedPatients +
+                ", observedPatients=" + patients +
                 '}';
     }
 }

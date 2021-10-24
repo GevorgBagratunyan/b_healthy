@@ -3,24 +3,16 @@ package com.blueteam.tracker.dto;
 import java.util.List;
 
 public class DoctorDTO implements DTO{
-    private Long id;
-    private String name;
+    private Long doctorId;
+    private Long objId;
     private List<PatientDTO> patients;
 
-    public Long getId() {
-        return id;
+    public Long getDoctorId() {
+        return doctorId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
     }
 
     public List<PatientDTO> getPatients() {
@@ -29,5 +21,13 @@ public class DoctorDTO implements DTO{
 
     public void setPatients(List<PatientDTO> patients) {
         this.patients = patients;
+    }
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 }

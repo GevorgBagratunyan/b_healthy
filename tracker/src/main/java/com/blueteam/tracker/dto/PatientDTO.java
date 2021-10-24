@@ -4,33 +4,16 @@ import java.util.List;
 
 public class PatientDTO implements DTO{
 
-    private Long id;
-    private String name;
-    private String birthDate;
+    private Long patientId;
+    private Long objId;
     private List<DoctorDTO> doctors;
 
-    public Long getId() {
-        return id;
+    public Long getPatientId() {
+        return patientId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
     }
 
     public List<DoctorDTO> getDoctors() {
@@ -39,5 +22,13 @@ public class PatientDTO implements DTO{
 
     public void setDoctors(List<DoctorDTO> doctors) {
         this.doctors = doctors;
+    }
+
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 }

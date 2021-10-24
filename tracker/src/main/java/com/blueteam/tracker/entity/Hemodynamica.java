@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "hemodynamica", schema = "tracker")
+@Table(name = "hemodynamica")
 public class Hemodynamica {
 
     @Id
@@ -19,7 +19,7 @@ public class Hemodynamica {
 
     @ManyToOne
     @JoinColumn(name = "patient_id")
-    private ObservedPatient observedPatient;
+    private Patient patient;
 
     public Hemodynamica() {
     }
@@ -49,12 +49,12 @@ public class Hemodynamica {
         this.heartRate = heartRate;
     }
 
-    public ObservedPatient getObservedPatient() {
-        return observedPatient;
+    public Patient getObservedPatient() {
+        return patient;
     }
 
-    public void setObservedPatient(ObservedPatient observedPatient) {
-        this.observedPatient = observedPatient;
+    public void setObservedPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public void setId(Long id) {
