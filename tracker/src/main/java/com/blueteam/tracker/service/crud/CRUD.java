@@ -3,7 +3,7 @@ package com.blueteam.tracker.service.crud;
 public interface CRUD<DTO, ID> extends
         Create<DTO>,
         Read<DTO, ID>,
-        Update<DTO>,
+        Update<DTO, ID>,
         Delete<ID>{
 
     @Override
@@ -16,6 +16,6 @@ public interface CRUD<DTO, ID> extends
     DTO get(ID id);
 
     @Override
-    void update(DTO dto);
+    void update(DTO dto, ID id);
 
 }
