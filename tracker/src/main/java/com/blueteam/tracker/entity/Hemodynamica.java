@@ -11,10 +11,10 @@ public class Hemodynamica {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "saturation")
+    @Column(name = "saturation", nullable = false)
     private Integer saturation;
 
-    @Column(name = "heart_rate")
+    @Column(name = "heart_rate", nullable = false)
     private Integer heartRate;
 
     @ManyToOne

@@ -1,6 +1,8 @@
 package com.blueteam.tracker.service.util;
 
 import com.blueteam.tracker.entity.Patient;
+import com.blueteam.tracker.exception.search.SearchIllegalArgumentException;
+import com.blueteam.tracker.exception.search.SearchNullParametersException;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
 
 import java.lang.reflect.Field;
@@ -20,12 +22,20 @@ public class CriteriaValidator {
         String message =  "limit = " + limit + ", offset = " + offset +
                 ", sort = " + sort + ", orderByFieldName = " + orderByFieldName;
 
-        if(limit == null || offset == null || sort == null || orderByFieldName == null) {
-            throw new NullPointerException();
+        if(limit == null || offset == null) {
+            throw new SearchNullParametersException("limit, offset");
         }
-
-        if(limit<0 || offset<0 || (!sort.equalsIgnoreCase("ASC") && !sort.equalsIgnoreCase("DESC"))) {
-            throw new IllegalArgumentException(message);
+        if(sort == null) {
+            criteria.setSort("ASC");
+        }
+        if(orderByFieldName == null) {
+            criteria.setOrderByFieldName("id");
+        }
+        if(limit<0 || offset<0 ) {
+            throw new SearchIllegalArgumentException("limit and offset must be grater than or equal to zero");
+        }
+        if(!sort.equalsIgnoreCase("ASC") && !sort.equalsIgnoreCase("DESC")) {
+            throw new SearchIllegalArgumentException(("'sort' must be of two types -> ASC or DESC"));
         }
 
         //This part of code checks all declared fields in ObservedPatient.class
@@ -38,7 +48,7 @@ public class CriteriaValidator {
             }
         }
         if(!fieldIsExists) {
-            throw new IllegalArgumentException("Field Name : " + orderByFieldName + " DOES NOT EXIST");
+            throw new SearchIllegalArgumentException("field Name : " + orderByFieldName + " DOES NOT EXIST");
         }
     }
 }

@@ -2,19 +2,11 @@ package com.blueteam.tracker.service.criteria;
 
 
 public class SearchCriteria {
-    private Long id;
+
     private Integer limit;
     private Integer offset;
     private String sort; // ASC or DESC
     private String orderByFieldName;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Integer getLimit() {
         return limit;

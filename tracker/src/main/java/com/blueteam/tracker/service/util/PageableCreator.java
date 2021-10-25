@@ -18,9 +18,7 @@ public class PageableCreator {
         String orderByFieldName = criteria.getOrderByFieldName();
 
         Sort srt;
-        if(sort==null) {
-            srt = Sort.by(Sort.Direction.ASC, "id");
-        } else if (sort.equalsIgnoreCase("ASC")) {
+        if (sort.equalsIgnoreCase("ASC")) {
             srt = Sort.by(Sort.Direction.ASC, orderByFieldName);
         } else {
             srt = Sort.by(Sort.Direction.DESC, orderByFieldName);
