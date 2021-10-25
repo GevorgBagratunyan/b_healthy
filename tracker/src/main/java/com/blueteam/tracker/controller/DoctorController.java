@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -21,13 +22,13 @@ public class DoctorController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody DoctorDTO doctorDTO) {
+    public ResponseEntity<Void> create(@Valid @RequestBody DoctorDTO doctorDTO) {
         doctorService.create(doctorDTO);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public  ResponseEntity<Void> update(@RequestBody DoctorDTO doctorDTO,
+    public  ResponseEntity<Void> update(@Valid @RequestBody DoctorDTO doctorDTO,
                                         @PathVariable Long id) {
         doctorService.update(doctorDTO, id);
         return ResponseEntity.ok().build();

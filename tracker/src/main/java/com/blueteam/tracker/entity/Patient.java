@@ -37,6 +37,12 @@ public class Patient implements Observed {
     @Column(name = "updated_date")
     private LocalDate updatedDate;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @PrePersist
     public void setObservedDate() {
         observationStarted = LocalDate.now();
@@ -166,6 +172,22 @@ public class Patient implements Observed {
 
     public void setUpdatedDate(LocalDate updatedDate) {
         this.updatedDate = updatedDate;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

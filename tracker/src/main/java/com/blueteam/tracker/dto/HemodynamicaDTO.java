@@ -1,8 +1,15 @@
 package com.blueteam.tracker.dto;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Positive;
+
 public class HemodynamicaDTO implements DTO{
 
+    @Positive
+    @Max(100)
     private Integer saturation;
+
+    @Positive
     private Integer heartRate;
 
     public Integer getSaturation() {
