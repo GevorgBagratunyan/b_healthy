@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class PatientController {
 
     @PutMapping("/track/{id}")
     public ResponseEntity<Void> trackHemodynamica(@Valid @RequestBody HemodynamicaDTO hemodynamica,
-                                                  @PathVariable Long id) {
+                                                  @NotNull @PathVariable Long id) {
         patientService.trackHemodynamicParams(hemodynamica, id);
         return ResponseEntity.ok().build();
     }

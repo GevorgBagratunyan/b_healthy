@@ -5,6 +5,8 @@ import com.blueteam.tracker.dto.PatientDTO;
 import com.blueteam.tracker.entity.Hemodynamica;
 import com.blueteam.tracker.entity.Patient;
 import com.blueteam.tracker.entity.Doctor;
+import com.blueteam.tracker.exception.doctor.DoctorNotFoundException;
+import com.blueteam.tracker.exception.patient.PatientNotFoundException;
 import com.blueteam.tracker.repository.PatientRepository;
 import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
@@ -47,7 +49,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
     @Override
     public PatientDTO get(Long id) {
         Patient patient =  patientRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
         PatientDTO patientDTO = new PatientDTO();
         BeanUtils.copyProperties(patient, patientDTO);
         DtoMapper.mapDoctorsToDoctorDTOs(patient, patientDTO);
@@ -58,7 +60,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
     @Override
     public void update(PatientDTO patientDTO, Long id) {
         Patient patient = patientRepository.findById(id)
-                        .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
         BeanUtils.copyProperties(patientDTO, patient);
         patientRepository.save(patient);
     }
@@ -72,7 +74,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     public void trackHemodynamicParams(HemodynamicaDTO hemodynamicaDTO, Long id) {
        Patient patient = patientRepository.findById(id)
-               .orElseThrow(NoSuchElementException::new);
+               .orElseThrow(() -> new PatientNotFoundException(id.toString()));
        Hemodynamica hemodynamica = new Hemodynamica();
        BeanUtils.copyProperties(hemodynamicaDTO, hemodynamica);
        hemodynamica.setObservedPatient(patient);
@@ -82,38 +84,38 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     public void addDoctor(Long doctorId, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
         patient.addObserver(doctor);
         patientRepository.save(patient);
     }
 
     public void removeDoctor(Long doctorId, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
         patient.removeObserver(doctor);
         patientRepository.save(patient);
     }
 
     public void redAlert(Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
         patient.redAlert();
     }
 
     public List<PatientDTO> getPatientsByDoctorId(Long doctorId){
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
         List<Patient> patients = doctor.getPatients();
         return DtoMapper.mapToPatientDTOs(patients);
     }
 
     public List<Hemodynamica> getCurrentHemodynamics(Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
         return patient.getHemodynamics();
     }
 }

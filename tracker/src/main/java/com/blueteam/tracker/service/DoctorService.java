@@ -3,6 +3,8 @@ package com.blueteam.tracker.service;
 import com.blueteam.tracker.dto.DoctorDTO;
 import com.blueteam.tracker.entity.Patient;
 import com.blueteam.tracker.entity.Doctor;
+import com.blueteam.tracker.exception.doctor.DoctorNotFoundException;
+import com.blueteam.tracker.exception.patient.PatientNotFoundException;
 import com.blueteam.tracker.repository.PatientRepository;
 import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
@@ -12,9 +14,7 @@ import com.blueteam.tracker.service.util.DtoMapper;
 import com.blueteam.tracker.service.util.PageableCreator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +48,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     @Override
     public DoctorDTO get(Long id) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
         DoctorDTO doctorDTO = new DoctorDTO();
         BeanUtils.copyProperties(doctor, doctorDTO);
         DtoMapper.mapPatientsToPatientDTOs(doctor, doctorDTO);
@@ -58,7 +58,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     @Override
     public void update(DoctorDTO doctorDTO, Long id) {
         Doctor doctor = doctorRepository.findById(id)
-                        .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
         BeanUtils.copyProperties(doctorDTO, doctor);
         doctorRepository.save(doctor);
     }
@@ -73,25 +73,25 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
 
     public void addPatient(Long doctorId, Long patientId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
         doctor.getPatients().add(patient);
         doctorRepository.save(doctor);
     }
 
     public void removeObservedPatient(Long doctorId, Long patientId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
         doctor.getPatients().remove(patient);
         doctorRepository.save(doctor);
     }
 
     public Set<DoctorDTO> getDoctorsByPatientId(Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
         Set<Doctor> doctors = patient.getDoctors();
         return DtoMapper.mapToDoctorDTOs(doctors);
     }
