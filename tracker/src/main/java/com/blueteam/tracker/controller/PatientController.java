@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class PatientController {
     }
 
     @PutMapping("/track/{id}")
-    public ResponseEntity<Void> trackHemodynamica(@RequestBody HemodynamicaDTO hemodynamica,
+    public ResponseEntity<Void> trackHemodynamica(@Valid @RequestBody HemodynamicaDTO hemodynamica,
                                                   @PathVariable Long id) {
         patientService.trackHemodynamicParams(hemodynamica, id);
         return ResponseEntity.ok().build();
@@ -34,7 +35,6 @@ public class PatientController {
         patientService.addDoctor(doctorId, patientId);
         return ResponseEntity.ok().build();
     }
-
 
     @PutMapping("/doctors/remove")
     public ResponseEntity<Void> removeObservingDoctor(@RequestParam Long doctorId,
@@ -50,7 +50,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public  ResponseEntity<Void> update(@RequestBody PatientDTO patientDTO,
+    public  ResponseEntity<Void> update(@Valid @RequestBody PatientDTO patientDTO,
                                         @PathVariable Long id) {
         patientService.update(patientDTO, id);
         return ResponseEntity.ok().build();
@@ -81,18 +81,14 @@ public class PatientController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody PatientDTO patientDTO) {
+    public ResponseEntity<Void> create(@Valid @RequestBody PatientDTO patientDTO) {
         patientService.create(patientDTO);
         return ResponseEntity.ok().build();
     }
-
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         patientService.delete(id);
         return ResponseEntity.ok().build();
     }
-
-
 }
