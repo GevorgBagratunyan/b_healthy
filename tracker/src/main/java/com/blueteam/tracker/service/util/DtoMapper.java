@@ -23,6 +23,7 @@ public class DtoMapper {
         for (Patient patient : patients) {
             PatientDTO patientDTO = new PatientDTO();
             BeanUtils.copyProperties(patient, patientDTO);
+            patientDTO.setPatientId(patient.getId());
             mapDoctorsToDoctorDTOs(patient,patientDTO);
             patientDTOs.add(patientDTO);
         }
@@ -36,6 +37,7 @@ public class DtoMapper {
         for(Doctor doctor : doctors) {
             DoctorDTO doctorDTO = new DoctorDTO();
             BeanUtils.copyProperties(doctor, doctorDTO);
+            doctorDTO.setDoctorId(doctor.getId());
             doctorDTOs.add(doctorDTO);
         }
         patientDTO.setDoctors(doctorDTOs);
@@ -47,6 +49,7 @@ public class DtoMapper {
         for (Doctor doctor : doctors) {
             DoctorDTO doctorDTO = new DoctorDTO();
             BeanUtils.copyProperties(doctor, doctorDTO);
+            doctorDTO.setDoctorId(doctor.getId());
             mapPatientsToPatientDTOs(doctor, doctorDTO);
             doctorDTOs.add(doctorDTO);
         }
@@ -59,6 +62,7 @@ public class DtoMapper {
         for(Patient patient : patients) {
             PatientDTO patientDTO = new PatientDTO();
             BeanUtils.copyProperties(patient, patientDTO);
+            patientDTO.setPatientId(patient.getId());
             patientDTOs.add(patientDTO);
         }
         doctorDTO.setPatients(patientDTOs);

@@ -15,6 +15,7 @@ import com.blueteam.tracker.service.util.CriteriaValidator;
 import com.blueteam.tracker.service.util.DtoMapper;
 import com.blueteam.tracker.service.util.PageableCreator;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,12 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     @Override
     public void delete(Long id) {
-        patientRepository.deleteById(id);
+        try{
+            patientRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new PatientNotFoundException("id");
+        }
+
     }
 
     @Override
