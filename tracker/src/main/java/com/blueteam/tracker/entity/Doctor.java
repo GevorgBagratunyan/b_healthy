@@ -18,7 +18,7 @@ public class Doctor implements Observer {
     private Long id;
 
     @Column(name = "object_id")
-    private Long obj_id;
+    private Long objId;
 
     @ManyToMany
     @JoinTable(name = "doctor_patient",
@@ -60,12 +60,12 @@ public class Doctor implements Observer {
         this.patients = patients;
     }
 
-    public Long getObj_id() {
-        return obj_id;
+    public Long getObjId() {
+        return objId;
     }
 
-    public void setObj_id(Long obj_id) {
-        this.obj_id = obj_id;
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 
     public String getEmail() {
@@ -101,7 +101,7 @@ public class Doctor implements Observer {
     public String toString() {
         return "Doctor{" +
                 "id=" + id +
-                ", obj_id=" + obj_id +
+                ", objId=" + objId +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';

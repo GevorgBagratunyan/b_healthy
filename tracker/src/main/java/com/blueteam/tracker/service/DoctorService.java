@@ -13,12 +13,12 @@ import com.blueteam.tracker.service.util.CriteriaValidator;
 import com.blueteam.tracker.service.util.DtoMapper;
 import com.blueteam.tracker.service.util.PageableCreator;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
@@ -37,12 +37,16 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     public void create(DoctorDTO doctorDTO) {
         Doctor doctor = new Doctor();
         BeanUtils.copyProperties(doctorDTO, doctor);
-        doctorRepository.save(doctor);
+        Doctor saved = doctorRepository.save(doctor);
     }
 
     @Override
     public void delete(Long id) {
-        doctorRepository.deleteById(id);
+        try{
+            doctorRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new DoctorNotFoundException(id.toString());
+        }
     }
 
     @Override
@@ -51,6 +55,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
                 .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
         DoctorDTO doctorDTO = new DoctorDTO();
         BeanUtils.copyProperties(doctor, doctorDTO);
+        doctorDTO.setDoctorId(doctor.getId());
         DtoMapper.mapPatientsToPatientDTOs(doctor, doctorDTO);
         return doctorDTO;
     }
