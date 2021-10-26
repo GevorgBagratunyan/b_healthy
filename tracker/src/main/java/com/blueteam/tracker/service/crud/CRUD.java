@@ -4,18 +4,18 @@ public interface CRUD<DTO, ID> extends
         Create<DTO>,
         Read<DTO, ID>,
         Update<DTO, ID>,
-        Delete<ID>{
+        Delete<DTO, ID>{
 
     @Override
-    void create(DTO dto);
+    DTO create(DTO dto);
 
     @Override
-    void delete(ID id);
+    DTO delete(ID id);
 
     @Override
     DTO get(ID id);
 
     @Override
-    void update(DTO dto, ID id);
+    DTO update(DTO dto, ID id);
 
 }
