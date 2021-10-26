@@ -27,9 +27,11 @@ public class CriteriaValidator {
         }
         if(sort == null) {
             criteria.setSort("ASC");
+            sort = "ASC";
         }
         if(orderByFieldName == null) {
             criteria.setOrderByFieldName("id");
+            orderByFieldName = "id";
         }
         if(limit<0 || offset<0 ) {
             throw new SearchIllegalArgumentException("limit and offset must be grater than or equal to zero");

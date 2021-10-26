@@ -18,6 +18,15 @@ public class PatientDTO implements DTO{
     private String phoneNumber;
     private List<DoctorDTO> doctors;
 
+    public PatientDTO() {
+    }
+
+    public PatientDTO(Long objId, String email, String phoneNumber) {
+        this.objId = objId;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Long getPatientId() {
         return patientId;
     }
