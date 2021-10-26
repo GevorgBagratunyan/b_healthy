@@ -31,17 +31,17 @@ public class PatientController {
     }
 
     @PutMapping("/doctors/add")
-    public ResponseEntity<Void> addObservingDoctor(@RequestParam Long doctorId,
+    public ResponseEntity<PatientDTO> addObservingDoctor(@RequestParam Long doctorId,
                                                    @RequestParam Long patientId) {
-        patientService.addDoctor(doctorId, patientId);
-        return ResponseEntity.ok().build();
+        PatientDTO responseDTO = patientService.addDoctor(doctorId, patientId);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @PutMapping("/doctors/remove")
-    public ResponseEntity<Void> removeObservingDoctor(@RequestParam Long doctorId,
+    public ResponseEntity<PatientDTO> removeObservingDoctor(@RequestParam Long doctorId,
                                                       @RequestParam Long patientId) {
-        patientService.removeDoctor(doctorId, patientId);
-        return ResponseEntity.ok().build();
+        PatientDTO responseDTO = patientService.removeDoctor(doctorId, patientId);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @PutMapping("/alert/{id}")
@@ -51,10 +51,10 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public  ResponseEntity<Void> update(@Valid @RequestBody PatientDTO patientDTO,
+    public  ResponseEntity<PatientDTO> update(@Valid @RequestBody PatientDTO patientDTO,
                                         @PathVariable Long id) {
-        patientService.update(patientDTO, id);
-        return ResponseEntity.ok().build();
+        PatientDTO responseDTO = patientService.update(patientDTO, id);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @GetMapping
@@ -82,14 +82,14 @@ public class PatientController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody PatientDTO patientDTO) {
-        patientService.create(patientDTO);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PatientDTO> create(@Valid @RequestBody PatientDTO patientDTO) {
+        PatientDTO responseDTO = patientService.create(patientDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        patientService.delete(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PatientDTO> delete(@PathVariable Long id) {
+        PatientDTO responseDTO = patientService.delete(id);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 }

@@ -13,7 +13,6 @@ import com.blueteam.tracker.service.util.CriteriaValidator;
 import com.blueteam.tracker.service.util.DtoMapper;
 import com.blueteam.tracker.service.util.PageableCreator;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -34,19 +33,25 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     }
 
     @Override
-    public void create(DoctorDTO doctorDTO) {
+    public DoctorDTO create(DoctorDTO doctorDTO) {
         Doctor doctor = new Doctor();
         BeanUtils.copyProperties(doctorDTO, doctor);
         Doctor saved = doctorRepository.save(doctor);
+        DoctorDTO responseDTO = new DoctorDTO();
+        BeanUtils.copyProperties(saved, responseDTO);
+        responseDTO.setDoctorId(saved.getId());
+        return responseDTO;
     }
 
     @Override
-    public void delete(Long id) {
-        try{
-            doctorRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new DoctorNotFoundException(id.toString());
-        }
+    public DoctorDTO delete(Long id) {
+        DoctorDTO responseDTO = new DoctorDTO();
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
+        BeanUtils.copyProperties(doctor, responseDTO);
+        responseDTO.setDoctorId(doctor.getId());
+        doctorRepository.deleteById(id);
+        return responseDTO;
     }
 
     @Override
@@ -61,11 +66,16 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     }
 
     @Override
-    public void update(DoctorDTO doctorDTO, Long id) {
+    public DoctorDTO update(DoctorDTO doctorDTO, Long id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
         BeanUtils.copyProperties(doctorDTO, doctor);
-        doctorRepository.save(doctor);
+        Doctor saved = doctorRepository.save(doctor);
+        DoctorDTO responseDTO = new DoctorDTO();
+        BeanUtils.copyProperties(saved, responseDTO);
+        responseDTO.setDoctorId(saved.getId());
+        return responseDTO;
+
     }
 
     public Set<DoctorDTO> getAll(SearchCriteria criteria) {
@@ -73,25 +83,33 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
         Pageable pageable = PageableCreator.createPageable(criteria);
         List<Doctor> doctors = doctorRepository.findAll(pageable).getContent();
         Set<Doctor> docs = new HashSet<>(doctors);
-        return  DtoMapper.mapToDoctorDTOs(docs);
+        return DtoMapper.mapToDoctorDTOs(docs);
     }
 
-    public void addPatient(Long doctorId, Long patientId) {
+    public DoctorDTO addPatient(Long doctorId, Long patientId) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
         doctor.getPatients().add(patient);
-        doctorRepository.save(doctor);
+        Doctor saved = doctorRepository.save(doctor);
+        DoctorDTO responseDTO = new DoctorDTO();
+        BeanUtils.copyProperties(saved, responseDTO);
+        responseDTO.setDoctorId(saved.getId());
+        return responseDTO;
     }
 
-    public void removeObservedPatient(Long doctorId, Long patientId) {
+    public DoctorDTO removeObservedPatient(Long doctorId, Long patientId) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
         doctor.getPatients().remove(patient);
-        doctorRepository.save(doctor);
+        Doctor saved = doctorRepository.save(doctor);
+        DoctorDTO responseDTO = new DoctorDTO();
+        BeanUtils.copyProperties(saved, responseDTO);
+        responseDTO.setDoctorId(saved.getId());
+        return responseDTO;
     }
 
     public Set<DoctorDTO> getDoctorsByPatientId(Long id) {
