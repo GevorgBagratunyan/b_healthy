@@ -1,0 +1,12 @@
+{
+    "emailsAndPhoneNumbers": {
+        "test1@mail.com": "099202020",
+        "test2@mail.com": "099212121",
+        "test3@mail.com": "099222222"
+    },
+    "alertMsg": "IN DANDER!!!",
+    "currentAvgHemodynamica" : {
+        "saturation" : 85,
+        "heartRate" : 120
+    }
+}
