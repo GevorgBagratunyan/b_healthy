@@ -1,8 +1,8 @@
 {
     "emailsAndPhoneNumbers": {
-        "test1@mail.com": "099202020",
-        "test2@mail.com": "099212121",
-        "test3@mail.com": "099222222"
+        "g.bagratunyan@gmail.com": "099202020",
+        "g.bagratunyan1984@gmail.com": "099212121",
+        "gevfacebook@gmail.com": "099222222"
     },
     "alertMsg": "IN DANDER!!!",
     "currentAvgHemodynamica" : {
