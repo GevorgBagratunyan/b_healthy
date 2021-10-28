@@ -17,9 +17,11 @@ import java.util.Map;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final AlertingService alertingService;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    public NotificationService(NotificationRepository notificationRepository, AlertingService alertingService) {
         this.notificationRepository = notificationRepository;
+        this.alertingService = alertingService;
     }
 
     public void notifyDoctors(NotificationDTO notificationDTO) {
@@ -44,7 +46,6 @@ public class NotificationService {
             notification.setHemodynamica(hemodynamica);
             notification.setDoctorContacts(contactsList);
             notificationRepository.save(notification);
-            AlertingService.alert(notification, alertMsg);
-
+            alertingService.alert(notification, alertMsg);
     }
 }
