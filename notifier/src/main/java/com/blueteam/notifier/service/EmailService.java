@@ -1,4 +1,4 @@
-package com.blueteam.notifier.mail;
+package com.blueteam.notifier.service;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,7 +14,6 @@ public class EmailService {
     }
 
     public void sendEmail(String to, String subject, String text) {
-
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("B_Healthy@gmail.com");
         message.setTo(to);
