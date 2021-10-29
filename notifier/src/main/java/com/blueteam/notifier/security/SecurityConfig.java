@@ -1,4 +1,4 @@
-package com.blueteam.tracker.security;
+package com.blueteam.notifier.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -22,9 +22,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // allow all who are accessing "auth" service
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
-                .antMatchers("/patients/**").hasRole("PATIENT")
-                .antMatchers("/doctors/**").hasRole("DOCTOR")
-                .antMatchers("/admins/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
     }
 
