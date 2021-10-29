@@ -1,4 +1,4 @@
-package com.blueteam.tracker.security.properties;
+package com.blueteam.notifier.security.properties;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

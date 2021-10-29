@@ -1,4 +1,4 @@
-package com.blueteam.tracker.security.properties;
+package com.blueteam.notifier.security.properties;
 
 
 public class JwtConfig {
