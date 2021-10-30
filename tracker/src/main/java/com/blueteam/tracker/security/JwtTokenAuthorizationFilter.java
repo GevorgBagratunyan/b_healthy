@@ -1,27 +1,34 @@
 package com.blueteam.tracker.security;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.blueteam.tracker.security.properties.AppUser;
 import com.blueteam.tracker.security.properties.JwtConfig;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC256;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
-public class JwtTokenAuthorizationFilter extends OncePerRequestFilter {
+public class JwtTokenAuthorizationFilter extends BasicAuthenticationFilter {
+
+    public JwtTokenAuthorizationFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -45,20 +52,19 @@ public class JwtTokenAuthorizationFilter extends OncePerRequestFilter {
             DecodedJWT jwt = JWT.require(HMAC512(JwtConfig.SECRET.getBytes()))
                     .build()
                     .verify(token);
-
             // 4.1 Get username and authorities from jwt
             String username = jwt.getSubject();
-            String authoritiesClaim = jwt
-                    .getClaim("authorities").asString();
-            Set<GrantedAuthority> authorities = Arrays.stream(authoritiesClaim.split(","))
+            Claim claim = jwt.getClaim("authorities");
+            List<String> authList = claim.asList(String.class);
+
+            Set<GrantedAuthority> authorities = authList.stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toSet());
-
             if (username != null) {
                 // 5. Create auth object
                 AppUser appUser = new AppUser(username, authorities);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        appUser, jwt.getToken(), appUser.getAuthorities());
+                        appUser, token, authorities);
                 // 6. Authenticate the user
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
