@@ -18,6 +18,7 @@ public class User {
     @Column(name = "password")
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",schema = "user_schema")
     private Collection<Role> roles = new ArrayList<Role>();
 
     public User() {
