@@ -18,7 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterAfter(new JwtTokenAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new JwtTokenAuthorizationFilter(authenticationManager()))
                 .authorizeRequests()
                 // allow all who are accessing "auth" service
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
