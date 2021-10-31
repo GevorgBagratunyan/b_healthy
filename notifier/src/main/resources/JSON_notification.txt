@@ -1,8 +1,8 @@
 {
     "emailsAndPhoneNumbers": {
-        "g.bagratunyan@gmail.com": "099202020",
-        "g.bagratunyan1984@gmail.com": "099212121",
-        "gevfacebook@gmail.com": "099222222"
+        "g.bagratunyan@gmail.com": "099209889",
+        "g.bagratunyan1984@gmail.com": null,
+        "gevfacebook@gmail.com": null
     },
     "alertMsg": "IN DANDER!!!",
     "currentAvgHemodynamica" : {
