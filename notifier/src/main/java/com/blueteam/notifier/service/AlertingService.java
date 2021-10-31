@@ -18,24 +18,24 @@ public class AlertingService {
     }
 
     public void alert(Notification notification, String alertMsg) {
-        List<DoctorContacts> contacts = notification.getDoctorContacts();
-        for (DoctorContacts c : contacts) {
-            String emailText = "Patient with id -> " + notification.getObjId() + " " +
+        DoctorContacts contacts = notification.getDoctorContacts();
+
+            String emailText = "Patient with id -> " + notification.getObjId() + ": " +
                     alertMsg + ".\nHeart rate is: " +
                     notification.getHemodynamica().getHeartRate() +
                     ", SpO2 is: " + notification.getHemodynamica().getSaturation();
-            String smsText = "Patient with id -> " + notification.getObjId() + " " +
-                    alertMsg + ".\n.Heart rate is: " +
+            String smsText = "Patient with id -> " + notification.getObjId() + ": " +
+                    alertMsg + ".\nHeart rate is: " +
                     notification.getHemodynamica().getHeartRate() + ", SpO2 is: " +
                     notification.getHemodynamica().getSaturation();
-            String email = c.getDoctorsEmail();
-            String phoneNumber = c.getDoctorsPhoneNumber();
+            String email = contacts.getDoctorsEmail();
+            String phoneNumber = contacts.getDoctorsPhoneNumber();
             if (email != null) {
                 emailService.sendEmail(email, "Health condition alerting", emailText);
             }
             if (phoneNumber != null) {
                 smsService.sendSms(phoneNumber, smsText);
             }
-        }
+
     }
 }

@@ -1,10 +1,12 @@
 package com.blueteam.tracker.entity;
 
+import com.blueteam.tracker.controller.RestTemplateClient;
+import com.blueteam.tracker.dto.HemodynamicaDTO;
+import com.blueteam.tracker.dto.NotificationDTO;
 import com.blueteam.tracker.entity.observer.Observer;
+import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,15 +35,16 @@ public class Doctor implements Observer {
     private String phoneNumber;
 
     @Override
-    public void handleEvent(Hemodynamica hemodynamica, Long patientId, String msg) {
-        System.out.println("Sending alert to NOTIFIER module");
-        Integer heartRateAVG = hemodynamica.getHeartRate();
-        Integer saturationAVG = hemodynamica.getSaturation();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        LocalDateTime alertTime = LocalDateTime.now();
-        System.err.println("Sending Email to doctor: " + this.id + "...");
-        System.err.println(msg + ", Heart Rate is: " + heartRateAVG + ", Saturation is: " + saturationAVG);
-        System.err.println(dtf.format(alertTime));
+    public void handleEvent(Hemodynamica hemodynamica, Long objId, String msg) {
+        NotificationDTO notificationDTO = new NotificationDTO();
+        HemodynamicaDTO hemodynamicaDTO = new HemodynamicaDTO();
+        BeanUtils.copyProperties(hemodynamica, hemodynamicaDTO);
+        notificationDTO.setAlertMsg(msg);
+        notificationDTO.setCurrentAvgHemodynamica(hemodynamicaDTO);
+        notificationDTO.setObjId(objId);
+        notificationDTO.setEmail(email);
+        notificationDTO.setPhoneNumber(phoneNumber);
+        RestTemplateClient.sendNotification(notificationDTO);
     }
 
     public Long getId() {

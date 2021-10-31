@@ -20,16 +20,15 @@ public class Notification {
     @Embedded
     private Hemodynamica hemodynamica;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "notification_id", referencedColumnName = "id")
-    private List<DoctorContacts> doctorContacts;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "notification_id")
+    private DoctorContacts doctorContacts;
 
     @Column(name = "notification_date")
     private LocalDateTime notificationDate;
 
     @PrePersist
     public void setNotificationDate() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         this.notificationDate = LocalDateTime.now().withNano(0);
     }
 
@@ -57,21 +56,13 @@ public class Notification {
         this.hemodynamica = hemodynamica;
     }
 
-//    public String getDoctorsPhoneNumber() {
-//        return doctorsPhoneNumber;
-//    }
-//
-//    public void setDoctorsPhoneNumber(String doctorsPhoneNumber) {
-//        this.doctorsPhoneNumber = doctorsPhoneNumber;
-//    }
-//
-//    public String getDoctorsEmail() {
-//        return doctorsEmail;
-//    }
-//
-//    public void setDoctorsEmail(String doctorsEmail) {
-//        this.doctorsEmail = doctorsEmail;
-//    }
+    public DoctorContacts getDoctorContacts() {
+        return doctorContacts;
+    }
+
+    public void setDoctorContacts(DoctorContacts doctorContacts) {
+        this.doctorContacts = doctorContacts;
+    }
 
     public LocalDateTime getNotificationDate() {
         return notificationDate;
@@ -79,14 +70,6 @@ public class Notification {
 
     public void setNotificationDate(LocalDateTime notificationDate) {
         this.notificationDate = notificationDate;
-    }
-
-    public List<DoctorContacts> getDoctorContacts() {
-        return doctorContacts;
-    }
-
-    public void setDoctorContacts(List<DoctorContacts> doctorContacts) {
-        this.doctorContacts = doctorContacts;
     }
 
     @Override
