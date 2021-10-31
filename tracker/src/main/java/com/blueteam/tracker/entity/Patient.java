@@ -70,7 +70,7 @@ public class Patient implements Observed {
     public void notifyObservers(String msg) {
         Hemodynamica avg = calculateAvgHemodynamica();
         for (Doctor d : doctors) {
-            d.handleEvent(avg, id, msg);
+            d.handleEvent(avg, objId, msg);
         }
     }
 
@@ -90,7 +90,7 @@ public class Patient implements Observed {
             return;
         }
         if (isDangerous()) {
-            String msg = "Hemodynamic parameters are dangerous";
+            String msg = "IN DANDER!!!";
             notifyObservers(msg);
         }
     }

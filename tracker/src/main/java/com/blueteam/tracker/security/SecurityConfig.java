@@ -22,6 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // allow all who are accessing "auth" service
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers("/**").permitAll() // ITS TEMPORARY antMatcher FOR TESTING PURPOSES ONLY!
                 .antMatchers("/patients/**").hasRole("PATIENT")
                 .antMatchers("/doctors/**").hasRole("DOCTOR")
                 .antMatchers("/admins/**").hasRole("ADMIN")

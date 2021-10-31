@@ -25,27 +25,24 @@ public class NotificationService {
     }
 
     public void notifyDoctors(NotificationDTO notificationDTO) {
-        Map<String, String> emailsAndPhoneNumbers = notificationDTO.getEmailsAndPhoneNumbers();
         HemodynamicaDTO hemodynamicaDTO = notificationDTO.getCurrentAvgHemodynamica();
         String alertMsg = notificationDTO.getAlertMsg();
+        String phoneNumber = notificationDTO.getPhoneNumber();
+        String email = notificationDTO.getEmail();
         Long objId = notificationDTO.getObjId();
+
         Hemodynamica hemodynamica = new Hemodynamica();
         BeanUtils.copyProperties(hemodynamicaDTO, hemodynamica);
-        List<DoctorContacts> contactsList = new ArrayList<>();
+        DoctorContacts contacts = new DoctorContacts();
+        contacts.setDoctorsEmail(email);
+        contacts.setDoctorsPhoneNumber(phoneNumber);
 
-        for(Map.Entry<String, String> set : emailsAndPhoneNumbers.entrySet()) {
-            DoctorContacts contacts = new DoctorContacts();
-            String email = set.getKey();
-            String phoneNumber = set.getValue();
-            contacts.setDoctorsEmail(email);
-            contacts.setDoctorsPhoneNumber(phoneNumber);
-            contactsList.add(contacts);
-        }
-            Notification notification = new Notification();
-            notification.setObjId(objId);
-            notification.setHemodynamica(hemodynamica);
-            notification.setDoctorContacts(contactsList);
-            notificationRepository.save(notification);
-            alertingService.alert(notification, alertMsg);
+        Notification notification = new Notification();
+        notification.setObjId(objId);
+        notification.setHemodynamica(hemodynamica);
+        notification.setDoctorContacts(contacts);
+
+        notificationRepository.save(notification);
+        alertingService.alert(notification, alertMsg);
     }
 }
