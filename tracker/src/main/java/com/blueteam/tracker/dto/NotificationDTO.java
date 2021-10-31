@@ -1,9 +1,10 @@
-package com.blueteam.notifier.dto;
+package com.blueteam.tracker.dto;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 public class NotificationDTO implements DTO{
+
 
     private String phoneNumber;
     private String email;
