@@ -4,6 +4,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatientDTO implements DTO{
@@ -16,7 +17,7 @@ public class PatientDTO implements DTO{
     @NotBlank
     @Pattern(regexp = "^(\\d{3}[- .]?){2}\\d{4}$") //allow optional whitespace, dots, or hyphens (-)
     private String phoneNumber;
-    private List<DoctorDTO> doctors;
+    private List<DoctorDTO> doctors = new ArrayList<>();
 
     public PatientDTO() {
     }

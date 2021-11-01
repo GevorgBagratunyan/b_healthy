@@ -48,7 +48,7 @@ class PatientServiceTest {
 
     @Test
     @DisplayName("Create Patient and validate returned DTO")
-    void createDoctor_And_VerifyWithReturnedDto() {
+    void createPatient_And_VerifyWithReturnedDto() {
         PatientDTO patientDTO = new PatientDTO(1L, "test@mail.com", "099202020");
         Patient patient = new Patient();
         BeanUtils.copyProperties(patientDTO, patient);
@@ -76,7 +76,7 @@ class PatientServiceTest {
 
     @Test
     @DisplayName("Get Patient by id")
-    void getPatientById() {
+    void getPatientById_And_throwExceptionIfIdIsWrong() {
         Patient patient = new Patient();
         patient.setId(1L);
         patient.setEmail("Test@mail.com");
@@ -85,10 +85,11 @@ class PatientServiceTest {
 
         assertEquals(patientDTO.getPatientId(), patient.getId());
         assertEquals(patientDTO.getEmail(), patient.getEmail());
+        assertThrows(PatientNotFoundException.class, () -> patientService.get(-1L));
     }
 
     @Test
-    @DisplayName("Update doctor's info")
+    @DisplayName("Update patient's info")
     void updateDoctor_And_VerifyWithReturnedDto() {
         PatientDTO patientDTO = new PatientDTO(1L, "test@mail.com", "099202020");
         Patient patient = new Patient();
@@ -164,23 +165,25 @@ class PatientServiceTest {
     @Test
     @DisplayName("Add Observer Doctor to observed patient's list")
     void addObserverDoctorToPatientDoctorsList() {
-        Patient patient = new Patient();
-        patient.setId(1L);
         Doctor doctor = new Doctor();
-        doctor.setId(1L);
+        Patient patient = new Patient();
+        patient.setEmail("patient@mail.com");
+        doctor.setEmail("doctor@mail.com");
+        patient.getDoctors().add(doctor);
         Mockito.when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
         Mockito.when(doctorRepository.findById(1L)).thenReturn(Optional.of(doctor));
         Mockito.when(patientRepository.save(Mockito.any(Patient.class))).thenReturn(patient);
         PatientDTO patientDTO = patientService.addDoctor(1L, 1L);
 
-        assertEquals(patientDTO.getPatientId(), patient.getId());
-        assertThrows(PatientNotFoundException.class, () -> patientService.addDoctor(1L, -1L));
-        assertThrows(DoctorNotFoundException.class, () -> patientService.addDoctor(-1L, 1L));
+        assertEquals("patient@mail.com", patientDTO.getEmail());
+        assertEquals("doctor@mail.com", patientDTO.getDoctors().get(0).getEmail());
+        assertThrows(PatientNotFoundException.class, () -> patientService.addDoctor(1L, 2L));
+        assertThrows(DoctorNotFoundException.class, () -> patientService.addDoctor(2L, 1L));
     }
 
     @Test
     @DisplayName("Remove Observer Doctor from observed patient's list")
-    void removeObserverDoctorFromPatientDoctorsList() {
+    void removeObserverDoctorFromPatientsDoctorList() {
         Patient patient = new Patient();
         patient.setId(1L);
         Doctor doctor = new Doctor();
@@ -191,8 +194,8 @@ class PatientServiceTest {
         PatientDTO patientDTO = patientService.removeDoctor(1L, 1L);
 
         assertEquals(patientDTO.getPatientId(), patient.getId());
-        assertThrows(PatientNotFoundException.class, () -> patientService.addDoctor(1L, -1L));
-        assertThrows(DoctorNotFoundException.class, () -> patientService.addDoctor(-1L, 1L));
+        assertThrows(PatientNotFoundException.class, () -> patientService.removeDoctor(1L, -1L));
+        assertThrows(DoctorNotFoundException.class, () -> patientService.removeDoctor(-1L, 1L));
     }
 
     @Test

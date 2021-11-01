@@ -1,6 +1,7 @@
 package com.blueteam.tracker.service;
 
 import com.blueteam.tracker.dto.DoctorDTO;
+import com.blueteam.tracker.dto.PatientDTO;
 import com.blueteam.tracker.entity.Patient;
 import com.blueteam.tracker.entity.Doctor;
 import com.blueteam.tracker.exception.doctor.DoctorNotFoundException;
@@ -94,7 +95,10 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
         doctor.getPatients().add(patient);
         Doctor saved = doctorRepository.save(doctor);
         DoctorDTO responseDTO = new DoctorDTO();
+        PatientDTO patientDTO = new PatientDTO();
+        BeanUtils.copyProperties(patient, patientDTO);
         BeanUtils.copyProperties(saved, responseDTO);
+        responseDTO.getPatients().add(patientDTO);
         responseDTO.setDoctorId(saved.getId());
         return responseDTO;
     }

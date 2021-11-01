@@ -1,5 +1,6 @@
 package com.blueteam.tracker.service;
 
+import com.blueteam.tracker.dto.DoctorDTO;
 import com.blueteam.tracker.dto.HemodynamicaDTO;
 import com.blueteam.tracker.dto.PatientDTO;
 import com.blueteam.tracker.entity.Hemodynamica;
@@ -107,6 +108,9 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         Patient saved = patientRepository.save(patient);
         PatientDTO responseDTO = new PatientDTO();
         BeanUtils.copyProperties(saved, responseDTO);
+        DoctorDTO doctorDTO = new DoctorDTO();
+        BeanUtils.copyProperties(doctor, doctorDTO);
+        responseDTO.getDoctors().add(doctorDTO);
         responseDTO.setPatientId(saved.getId());
         return responseDTO;
     }
