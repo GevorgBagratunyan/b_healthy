@@ -1,7 +1,9 @@
 package com.blueteam.notifier.service;
 
+import com.blueteam.notifier.dto.EmailAuthenticationDto;
 import com.blueteam.notifier.dto.HemodynamicaDTO;
 import com.blueteam.notifier.dto.NotificationDTO;
+import com.blueteam.notifier.dto.SmsAuthenticationDto;
 import com.blueteam.notifier.entity.DoctorContacts;
 import com.blueteam.notifier.entity.Hemodynamica;
 import com.blueteam.notifier.entity.Notification;
@@ -9,19 +11,22 @@ import com.blueteam.notifier.repository.NotificationRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 @Service
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final AlertingService alertingService;
+    private final EmailService emailService;
+    private final SmsService smsService;
 
-    public NotificationService(NotificationRepository notificationRepository, AlertingService alertingService) {
+    public NotificationService(NotificationRepository notificationRepository,
+                               AlertingService alertingService,
+                               EmailService emailService,
+                               SmsService smsService) {
         this.notificationRepository = notificationRepository;
         this.alertingService = alertingService;
+        this.emailService = emailService;
+        this.smsService = smsService;
     }
 
     public void notifyDoctors(NotificationDTO notificationDTO) {
@@ -44,5 +49,17 @@ public class NotificationService {
 
         notificationRepository.save(notification);
         alertingService.alert(notification, alertMsg);
+    }
+
+    public  void authenticateWithSms(SmsAuthenticationDto smsAuthenticationDto) {
+        String phoneNumber = smsAuthenticationDto.getPhoneNumber();
+        String verificationCode = smsAuthenticationDto.getVerificationString();
+        smsService.sendSms(phoneNumber, verificationCode);
+    }
+
+    public  void authenticateWithEmail(EmailAuthenticationDto emailAuthenticationDto) {
+        String email = emailAuthenticationDto.getEmail();
+        String verificationCode = emailAuthenticationDto.getVerificationCode();
+        emailService.sendEmail(email, "Authentication", verificationCode);
     }
 }

@@ -1,7 +1,6 @@
 package com.blueteam.notifier.dto;
 
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 
 public class NotificationDTO implements DTO{
 
