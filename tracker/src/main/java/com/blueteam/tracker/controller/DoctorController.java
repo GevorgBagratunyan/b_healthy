@@ -65,7 +65,7 @@ public class DoctorController {
         return new ResponseEntity<>(doctorDTOs, HttpStatus.OK);
     }
 
-    @GetMapping("patients/{id}")
+    @GetMapping("/patients/{id}")
     public ResponseEntity<Set<DoctorDTO>> getDoctorsByPatientId(@PathVariable Long id) {
         Set<DoctorDTO> doctorDTOs = doctorService.getDoctorsByPatientId(id);
         return new ResponseEntity<>(doctorDTOs, HttpStatus.OK);
