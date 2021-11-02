@@ -3,7 +3,6 @@ package com.blueteam.tracker.entity;
 import com.blueteam.tracker.controller.RestTemplateClient;
 import com.blueteam.tracker.dto.HemodynamicaDTO;
 import com.blueteam.tracker.dto.NotificationDTO;
-import com.blueteam.tracker.entity.observer.Observer;
 import org.springframework.beans.BeanUtils;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "doctor")
-public class Doctor implements Observer {
+public class Doctor{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,19 +32,6 @@ public class Doctor implements Observer {
 
     @Column(name = "phone_number")
     private String phoneNumber;
-
-    @Override
-    public void handleEvent(Hemodynamica hemodynamica, Long objId, String msg) {
-        NotificationDTO notificationDTO = new NotificationDTO();
-        HemodynamicaDTO hemodynamicaDTO = new HemodynamicaDTO();
-        BeanUtils.copyProperties(hemodynamica, hemodynamicaDTO);
-        notificationDTO.setAlertMsg(msg);
-        notificationDTO.setCurrentAvgHemodynamica(hemodynamicaDTO);
-        notificationDTO.setObjId(objId);
-        notificationDTO.setEmail(email);
-        notificationDTO.setPhoneNumber(phoneNumber);
-        RestTemplateClient.sendNotification(notificationDTO);
-    }
 
     public Long getId() {
         return id;
