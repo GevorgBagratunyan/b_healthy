@@ -1,9 +1,9 @@
 package com.blueteam.tracker.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +20,9 @@ public class Hemodynamica {
     @Column(name = "heart_rate", nullable = false)
     private Integer heartRate;
 
+    @Column(name = "date")
+    private LocalDateTime date;
+
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patient;
@@ -30,6 +33,11 @@ public class Hemodynamica {
     public Hemodynamica(Integer saturation, Integer heartRate) {
         this.saturation = saturation;
         this.heartRate = heartRate;
+    }
+
+    @PrePersist
+    public void setDate() {
+        this.date = LocalDateTime.now().withNano(0);
     }
 
     public Long getId() {
@@ -62,6 +70,22 @@ public class Hemodynamica {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     @Override
