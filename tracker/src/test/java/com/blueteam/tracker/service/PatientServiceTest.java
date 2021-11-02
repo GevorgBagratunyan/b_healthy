@@ -199,16 +199,6 @@ class PatientServiceTest {
     }
 
     @Test
-    @DisplayName("Red Alert sent from patient")
-    void redAlert() {
-        Patient patient = new Patient();
-        patient.setId(1L);
-        Mockito.when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
-
-        assertThrows(PatientNotFoundException.class, () -> patientService.redAlert(-1L));
-    }
-
-    @Test
     @DisplayName("Get Observed patients of doctor by doctor's id")
     void getObservedPatientsByDoctorId() {
         Doctor doctor = new Doctor();
@@ -235,9 +225,8 @@ class PatientServiceTest {
         patient.addHemodynamicParameter(new Hemodynamica());
         patient.addHemodynamicParameter(new Hemodynamica());
         Mockito.when(patientRepository.findById(1L)).thenReturn(Optional.of(patient));
-        List<Hemodynamica> hemodynamics = patientService.getCurrentHemodynamics(1L);
+        List<HemodynamicaDTO> hemodynamics = patientService.getCurrentHemodynamics(1L);
 
         assertEquals(3, hemodynamics.size());
-        assertThrows(PatientNotFoundException.class, () -> patientService.redAlert(-1L));
     }
 }

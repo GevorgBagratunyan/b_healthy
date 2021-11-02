@@ -30,6 +30,16 @@ public class PatientController {
         return ResponseEntity.ok().build();
     }
 
+    //If doctor accepts the Alert, then stop tracking and notifying.
+    //Or if the patient healed, then switching back to tracking mode.
+    @PutMapping("/set-tracking")
+    public ResponseEntity<PatientDTO> setTrackingOnOrOff(@RequestParam Long id,
+                                                         @RequestParam Boolean isTracking) {
+        PatientDTO responseDTO = patientService.setTrackingOnOrOff(id, isTracking);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+    }
+
+
     @PutMapping("/doctors/add")
     public ResponseEntity<PatientDTO> addObservingDoctor(@RequestParam Long doctorId,
                                                    @RequestParam Long patientId) {
@@ -70,8 +80,8 @@ public class PatientController {
     }
 
     @GetMapping("/current-hemodynamics/{id}")
-    public ResponseEntity<List<Hemodynamica>> getCurrentHemodynamica(@PathVariable Long id) {
-        List<Hemodynamica> hemodynamics = patientService.getCurrentHemodynamics(id);
+    public ResponseEntity<List<HemodynamicaDTO>> getCurrentHemodynamica(@PathVariable Long id) {
+        List<HemodynamicaDTO> hemodynamics = patientService.getCurrentHemodynamics(id);
         return new ResponseEntity<>(hemodynamics, HttpStatus.OK);
     }
 

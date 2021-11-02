@@ -1,6 +1,8 @@
 package com.blueteam.tracker.entity;
 
-import com.blueteam.tracker.service.observer.ObservingService;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -19,12 +21,10 @@ public class Patient{
     @Column(name = "object_id")
     private Long objId;
 
-    @ManyToMany(mappedBy = "patients")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(mappedBy = "patients", fetch = FetchType.LAZY)
     private Set<Doctor> doctors = new HashSet<>();
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Hemodynamica> hemodynamics = new LinkedList<>();
 
     @Column(name = "observation_started")
@@ -41,6 +41,9 @@ public class Patient{
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "is_tracking")
+    private Boolean isTracking;
 
     @PrePersist
     public void setObservedDate() {
@@ -65,6 +68,11 @@ public class Patient{
 
     public void addHemodynamicParameter(Hemodynamica hemodynamica) {
         this.hemodynamics.add(hemodynamica);
+        //if a significant amount of information is recorded, remove (first)old 100 records
+        //This list keeps records for 7 days -> 7days*24hours*60minutes = 10080
+        if (this.hemodynamics.size() > 10080) {
+            this.hemodynamics.subList(0, 100).clear();
+        }
     }
 
     public Long getId() {
@@ -137,6 +145,14 @@ public class Patient{
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Boolean getTracking() {
+        return isTracking;
+    }
+
+    public void setTracking(Boolean tracking) {
+        isTracking = tracking;
     }
 
     @Override

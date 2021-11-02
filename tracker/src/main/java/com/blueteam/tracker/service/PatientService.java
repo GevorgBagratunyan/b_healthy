@@ -8,6 +8,7 @@ import com.blueteam.tracker.entity.Patient;
 import com.blueteam.tracker.entity.Doctor;
 import com.blueteam.tracker.exception.doctor.DoctorNotFoundException;
 import com.blueteam.tracker.exception.patient.PatientNotFoundException;
+import com.blueteam.tracker.repository.HemodynamicaRepository;
 import com.blueteam.tracker.repository.PatientRepository;
 import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,13 +30,16 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
+    private final HemodynamicaRepository hemodynamicaRepository;
     private final ObservingService observingService;
 
     public PatientService(DoctorRepository doctorRepository,
                           PatientRepository patientRepository,
+                          HemodynamicaRepository hemodynamicaRepository,
                           ObservingService observingService) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.hemodynamicaRepository = hemodynamicaRepository;
         this.observingService = observingService;
     }
 
@@ -98,9 +103,11 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         Hemodynamica hemodynamica = new Hemodynamica();
         BeanUtils.copyProperties(hemodynamicaDTO, hemodynamica);
         hemodynamica.setObservedPatient(patient);
-        patient.addHemodynamicParameter(hemodynamica);
-        observingService.observe(patient.getObjId(), hemodynamica,
-                patient.getDoctors(), patient.getHemodynamics());
+        hemodynamicaRepository.save(hemodynamica);
+        if(patient.getTracking()) {
+            observingService.observe(patient.getObjId(), hemodynamica,
+                    patient.getDoctors(), patient.getHemodynamics());
+        }
         patientRepository.save(patient);
     }
 
@@ -140,9 +147,27 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         return DtoMapper.mapToPatientDTOs(patients);
     }
 
-    public List<Hemodynamica> getCurrentHemodynamics(Long id) {
+    public List<HemodynamicaDTO> getCurrentHemodynamics(Long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException(id.toString()));
-        return patient.getHemodynamics();
+        List<Hemodynamica> hemodynamics = patient.getHemodynamics();
+        List<HemodynamicaDTO> hemodynamicaDTOs = new ArrayList<>();
+        for(Hemodynamica hemodynamica : hemodynamics) {
+            HemodynamicaDTO hemodynamicaDTO = new HemodynamicaDTO();
+            BeanUtils.copyProperties(hemodynamica, hemodynamicaDTO);
+            hemodynamicaDTOs.add(hemodynamicaDTO);
+        }
+        return hemodynamicaDTOs;
+    }
+
+    public PatientDTO setTrackingOnOrOff(Long id, Boolean isTracking) {
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+        patient.setTracking(isTracking);
+        Patient saved = patientRepository.save(patient);
+        PatientDTO responseDTO = new PatientDTO();
+        BeanUtils.copyProperties(saved, responseDTO);
+        responseDTO.setPatientId(saved.getId());
+        return responseDTO;
     }
 }

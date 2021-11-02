@@ -1,10 +1,5 @@
 package com.blueteam.tracker.entity;
 
-import com.blueteam.tracker.controller.RestTemplateClient;
-import com.blueteam.tracker.dto.HemodynamicaDTO;
-import com.blueteam.tracker.dto.NotificationDTO;
-import org.springframework.beans.BeanUtils;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
