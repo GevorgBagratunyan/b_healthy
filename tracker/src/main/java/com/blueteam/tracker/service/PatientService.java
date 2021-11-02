@@ -12,12 +12,12 @@ import com.blueteam.tracker.repository.PatientRepository;
 import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
 import com.blueteam.tracker.service.crud.CRUD;
+import com.blueteam.tracker.service.observer.ObservingService;
 import com.blueteam.tracker.service.util.CriteriaValidator;
 import com.blueteam.tracker.service.util.DtoMapper;
 import com.blueteam.tracker.service.util.PageableCreator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +28,14 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
+    private final ObservingService observingService;
 
     public PatientService(DoctorRepository doctorRepository,
-                          PatientRepository patientRepository) {
+                          PatientRepository patientRepository,
+                          ObservingService observingService) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.observingService = observingService;
     }
 
 
@@ -96,6 +99,8 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         BeanUtils.copyProperties(hemodynamicaDTO, hemodynamica);
         hemodynamica.setObservedPatient(patient);
         patient.addHemodynamicParameter(hemodynamica);
+        observingService.observe(patient.getObjId(), hemodynamica,
+                patient.getDoctors(), patient.getHemodynamics());
         patientRepository.save(patient);
     }
 
@@ -126,12 +131,6 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         BeanUtils.copyProperties(saved, responseDTO);
         responseDTO.setPatientId(saved.getId());
         return responseDTO;
-    }
-
-    public void redAlert(Long id) {
-        Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
-        patient.redAlert();
     }
 
     public List<PatientDTO> getPatientsByDoctorId(Long doctorId) {

@@ -44,12 +44,6 @@ public class PatientController {
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/alert/{id}")
-    public ResponseEntity<Void> redAlert(@PathVariable Long id){
-        patientService.redAlert(id);
-        return ResponseEntity.ok().build();
-    }
-
     @PutMapping("/{id}")
     public  ResponseEntity<PatientDTO> update(@Valid @RequestBody PatientDTO patientDTO,
                                         @PathVariable Long id) {
