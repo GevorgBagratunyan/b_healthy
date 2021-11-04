@@ -5,6 +5,7 @@ import com.blueteam.appointment.dto.PatientDTO;
 import com.blueteam.appointment.entity.Appointment;
 import com.blueteam.appointment.entity.Doctor;
 import com.blueteam.appointment.entity.Patient;
+import com.blueteam.appointment.exception.appointment.AppointmentNotFoundException;
 import com.blueteam.appointment.exception.doctor.DoctorNotFoundException;
 import com.blueteam.appointment.exception.patient.PatientNotFoundException;
 import com.blueteam.appointment.repository.AppointmentRepository;
@@ -20,13 +21,16 @@ import java.time.format.DateTimeFormatter;
 public class PatientService implements CRUD<PatientDTO, Long> {
 
     private final AppointmentRepository appointmentRepository;
+    private final NotifierService notifierService;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
 
     public PatientService(AppointmentRepository appointmentRepository,
+                          NotifierService notifierService,
                           PatientRepository patientRepository,
                           DoctorRepository doctorRepository) {
         this.appointmentRepository = appointmentRepository;
+        this.notifierService = notifierService;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
     }
@@ -51,6 +55,13 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         appointmentRepository.save(appointment);
         doctorRepository.save(doctor);
         patientRepository.save(patient);
+    }
+
+    public void cancelAnAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppointmentNotFoundException(String.valueOf(appointmentId)));
+        appointment.setCanceled(true);
+        notifierService.sendNotificationToDoctor(appointment);
     }
 
     @Override

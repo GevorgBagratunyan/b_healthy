@@ -15,13 +15,16 @@ public class Doctor {
     @Column(name = "obj_id")
     private Long objId;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "doctor")
+    @OneToMany(mappedBy = "doctor", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Appointment> appointments = new ArrayList<>();
 
     public Long getId() {
@@ -68,6 +71,14 @@ public class Doctor {
         this.appointments.add(appointment);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,6 +97,7 @@ public class Doctor {
         return "Doctor{" +
                 "id=" + id +
                 ", objId=" + objId +
+                ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", email='" + email + '\'' +
                 '}';

@@ -23,7 +23,10 @@ public class ObservingService {
             return;
         }
         if (isDangerous(hemodynamics)) {
-            String msg = "IN DANDER!!!";
+            String msg = "Patient with id -> " + objId + ": " +
+                    "has dangerous Hemodynamic parameters !!!" + ".\nHeart rate is: " +
+                    hemodynamica.getHeartRate() +
+                    ", SpO2 is: " + hemodynamica.getSaturation();
             notifyObservers(objId, msg, doctors, hemodynamics);
         }
     }
