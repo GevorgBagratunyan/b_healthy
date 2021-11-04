@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/doctor")
+@RequestMapping("/tracker/doctor")
 public class DoctorController {
 
     private final DoctorService doctorService;
