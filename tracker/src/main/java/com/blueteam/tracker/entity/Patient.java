@@ -24,7 +24,8 @@ public class Patient{
     @ManyToMany(mappedBy = "patients", fetch = FetchType.LAZY)
     private Set<Doctor> doctors = new HashSet<>();
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL,
+            orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Hemodynamica> hemodynamics = new LinkedList<>();
 
     @Column(name = "observation_started")

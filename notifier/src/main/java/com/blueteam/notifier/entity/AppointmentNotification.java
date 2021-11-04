@@ -1,22 +1,17 @@
-package com.blueteam.appointment.entity;
+package com.blueteam.notifier.entity;
+
+import com.blueteam.notifier.dto.HemodynamicaDTO;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
-public class Patient {
+public class AppointmentNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(name = "obj_id")
-    private Long objId;
-
-    @Column(name = "name")
-    private String name;
+    Long id;
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -24,8 +19,14 @@ public class Patient {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "patient", orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Appointment> appointments = new ArrayList<>();
+    @Column(name = "subject")
+    private String subject;
+
+    @Column(name = "message")
+    private String msg;
+
+    @Column(name = "obj_id")
+    private Long objId;
 
     public Long getId() {
         return id;
@@ -33,14 +34,6 @@ public class Patient {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getObjId() {
-        return objId;
-    }
-
-    public void setObjId(Long objId) {
-        this.objId = objId;
     }
 
     public String getPhoneNumber() {
@@ -59,32 +52,36 @@ public class Patient {
         this.email = email;
     }
 
-    public List<Appointment> getAppointments() {
-        return appointments;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setAppointments(List<Appointment> appointments) {
-        this.appointments = appointments;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
-    public void addAppointment(Appointment appointment) {
-        this.appointments.add(appointment);
+    public String getMsg() {
+        return msg;
     }
 
-    public String getName() {
-        return name;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Long getObjId() {
+        return objId;
+    }
+
+    public void setObjId(Long objId) {
+        this.objId = objId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Patient patient = (Patient) o;
-        return Objects.equals(id, patient.id) && Objects.equals(objId, patient.objId);
+        AppointmentNotification that = (AppointmentNotification) o;
+        return Objects.equals(id, that.id) && Objects.equals(objId, that.objId);
     }
 
     @Override
@@ -94,12 +91,13 @@ public class Patient {
 
     @Override
     public String toString() {
-        return "Patient{" +
+        return "AppointmentNotification{" +
                 "id=" + id +
-                ", objId=" + objId +
-                ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", email='" + email + '\'' +
+                ", subject='" + subject + '\'' +
+                ", msg='" + msg + '\'' +
+                ", objId=" + objId +
                 '}';
     }
 }

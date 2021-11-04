@@ -6,6 +6,8 @@ public class NotificationDTO implements DTO{
 
     private String phoneNumber;
     private String email;
+    private String subject;
+    private String msg;
     private HemodynamicaDTO currentAvgHemodynamica;
     private String alertMsg;
     @NotNull
@@ -49,5 +51,21 @@ public class NotificationDTO implements DTO{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }

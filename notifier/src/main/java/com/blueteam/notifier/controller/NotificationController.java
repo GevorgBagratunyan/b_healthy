@@ -26,6 +26,20 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/patient")
+    public ResponseEntity<Void> notifyPatient(
+            @RequestBody NotificationDTO notificationDTO) {
+        notificationService.sendNotification(notificationDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/doctor")
+    public ResponseEntity<Void> notifyDoctor(
+            @RequestBody NotificationDTO notificationDTO) {
+        notificationService.sendNotification(notificationDTO);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/sms-authentication")
     public ResponseEntity<Void> authenticateWithSms(
             @RequestBody SmsAuthenticationDto smsAuthenticationDto) {
