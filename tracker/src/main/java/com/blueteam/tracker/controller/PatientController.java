@@ -14,7 +14,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/patient")
+@RequestMapping("/tracker/patient")
 public class PatientController {
 
     private final PatientService patientService;
