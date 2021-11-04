@@ -3,19 +3,20 @@ package com.blueteam.notifier.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "notification")
-public class Notification {
+public class TrackingNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "patient_id")
     private Long objId;
+
+    @Column(name = "alert_msg")
+    private String alertMsg;
 
     @Embedded
     private Hemodynamica hemodynamica;
@@ -76,7 +77,7 @@ public class Notification {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Notification that = (Notification) o;
+        TrackingNotification that = (TrackingNotification) o;
         return Objects.equals(id, that.id) && Objects.equals(objId, that.objId);
     }
 

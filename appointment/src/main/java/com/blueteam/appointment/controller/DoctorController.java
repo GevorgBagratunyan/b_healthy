@@ -14,10 +14,10 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    @PutMapping("/accept-or-decline-an-appointment/{id}")
+    @PutMapping("/accept-or-decline/{id}")
     public ResponseEntity<Void> acceptOrDeclineAnAppointment(
             @RequestParam Boolean isAccepted,
-            @PathVariable Long appointmentId) {
+            @PathVariable(name = "id") Long appointmentId) {
         doctorService.acceptOrDeclineAnAppointment(isAccepted, appointmentId);
         return ResponseEntity.ok().build();
     }

@@ -6,8 +6,7 @@ public class AppointmentDTO {
 
     private Long doctorId;
 
-    // "dd-MM-yyyy HH:mm"
-    private String date;
+    private String date;  // "dd-MM-yyyy HH:mm"
 
     public Long getPatientId() {
         return patientId;

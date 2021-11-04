@@ -16,8 +16,16 @@ public class PatientController {
     }
 
     @PostMapping("/make-appointment")
-    public ResponseEntity<Void> makeAnAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+    public ResponseEntity<Void> makeAnAppointment(
+            @RequestBody AppointmentDTO appointmentDTO) {
         patientService.makeAnAppointment(appointmentDTO);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<Void> cancelAnAppointment(
+            @PathVariable(name = "id") Long appointmentId) {
+        patientService.cancelAnAppointment(appointmentId);
         return ResponseEntity.ok().build();
     }
 }
