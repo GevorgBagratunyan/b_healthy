@@ -4,10 +4,13 @@ import com.blueteam.authentication.filter.CustomAuthenticationFilter;
 import com.blueteam.authentication.filter.CustomAuthorizationFilter;
 import com.blueteam.authentication.repo.UserRepository;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,7 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.hibernate.criterion.Restrictions.and;
 
+@Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -27,8 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
-//        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-
         this.userRepository = userRepository;
     }
 
@@ -45,9 +48,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new CustomAuthenticationFilter(authenticationManager()))
                 .addFilter(new CustomAuthorizationFilter(authenticationManager(),userRepository))
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/login").permitAll()
-                .antMatchers("user/**").hasRole("ADMIN");
+                .antMatchers(HttpMethod.POST, "/user/users/save").permitAll()
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers("/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/register").permitAll()
+                .antMatchers("/user/**").hasAuthority("ADMIN")
+                .antMatchers("/user/**").authenticated();
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
