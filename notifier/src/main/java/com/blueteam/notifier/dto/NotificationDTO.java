@@ -1,13 +1,21 @@
 package com.blueteam.notifier.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class NotificationDTO implements DTO{
 
+    @NotBlank
+    @Pattern(regexp = "^(\\d{3}[- .]?){2}\\d{4}$",
+            message = "Phone number must contain digits, whitespaces, dots or hyphens (-)")
     private String phoneNumber;
+    @Email
     private String email;
     private String subject;
     private String msg;
+    @NotNull
     private HemodynamicaDTO currentAvgHemodynamica;
     private String alertMsg;
     @NotNull

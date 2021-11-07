@@ -22,6 +22,9 @@ public class Doctor{
     inverseJoinColumns = @JoinColumn(name = "patient_id"))
     private List<Patient> patients = new ArrayList<>();
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "email")
     private String email;
 
@@ -68,6 +71,14 @@ public class Doctor{
         this.phoneNumber = phoneNumber;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,6 +97,7 @@ public class Doctor{
         return "Doctor{" +
                 "id=" + id +
                 ", objId=" + objId +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';

@@ -1,6 +1,6 @@
-package com.blueteam.tracker.exception.validation;
+package com.blueteam.appointment.exception.validation;
 
-import com.blueteam.tracker.exception.ResponseError;
+import com.blueteam.appointment.exception.ResponseError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,7 +22,6 @@ public class ValidationExceptionHandler {
         for (ObjectError oe : allErrors) {
             error.addViolation(((FieldError) oe).getField(), oe.getDefaultMessage());
         }
-
         ResponseError responseError = new ResponseError("Validation error(s) occurred", error);
         return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
     }

@@ -19,11 +19,9 @@ public class CriteriaValidator {
         Integer offset = criteria.getOffset();
         String sort = criteria.getSort();
         String orderByFieldName = criteria.getOrderByFieldName();
-        String message =  "limit = " + limit + ", offset = " + offset +
-                ", sort = " + sort + ", orderByFieldName = " + orderByFieldName;
 
         if(limit == null || offset == null) {
-            throw new SearchNullParametersException("limit, offset");
+            throw new SearchNullParametersException("limit, offset", criteria);
         }
         if(sort == null) {
             criteria.setSort("ASC");
@@ -34,10 +32,10 @@ public class CriteriaValidator {
             orderByFieldName = "id";
         }
         if(limit<0 || offset<0 ) {
-            throw new SearchIllegalArgumentException("limit and offset must be grater than or equal to zero");
+            throw new SearchIllegalArgumentException("limit and offset must be grater than or equal to zero", criteria);
         }
         if(!sort.equalsIgnoreCase("ASC") && !sort.equalsIgnoreCase("DESC")) {
-            throw new SearchIllegalArgumentException(("'sort' must be of two types -> ASC or DESC"));
+            throw new SearchIllegalArgumentException("'sort' must be of two types -> ASC or DESC", criteria);
         }
 
         //This part of code checks all declared fields in ObservedPatient.class
@@ -50,7 +48,7 @@ public class CriteriaValidator {
             }
         }
         if(!fieldIsExists) {
-            throw new SearchIllegalArgumentException("field Name : " + orderByFieldName + " DOES NOT EXIST");
+            throw new SearchIllegalArgumentException("field Name : " + orderByFieldName + " DOES NOT EXIST", criteria);
         }
     }
 }

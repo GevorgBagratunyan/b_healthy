@@ -1,5 +1,6 @@
 package com.blueteam.tracker.exception.patient;
 
+import com.blueteam.tracker.exception.ResponseError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,7 +11,8 @@ public class PatientExceptionHandler {
 
     @ExceptionHandler(PatientNotFoundException.class)
     public ResponseEntity<Object> handlePatientNotFoundException(PatientNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        ResponseError responseError = new ResponseError(ex.getMessage(), ex.getData());
+        return new ResponseEntity<>(responseError, HttpStatus.NOT_FOUND);
     }
 
 }

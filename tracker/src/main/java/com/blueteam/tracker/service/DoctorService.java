@@ -48,9 +48,10 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     public DoctorDTO delete(Long id) {
         DoctorDTO responseDTO = new DoctorDTO();
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(id.toString(), id));
         BeanUtils.copyProperties(doctor, responseDTO);
         responseDTO.setDoctorId(doctor.getId());
+        DtoMapper.mapPatientsToPatientDTOs(doctor, responseDTO);
         doctorRepository.deleteById(id);
         return responseDTO;
     }
@@ -58,7 +59,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     @Override
     public DoctorDTO get(Long id) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(id.toString(), id));
         DoctorDTO doctorDTO = new DoctorDTO();
         BeanUtils.copyProperties(doctor, doctorDTO);
         doctorDTO.setDoctorId(doctor.getId());
@@ -69,7 +70,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     @Override
     public DoctorDTO update(DoctorDTO doctorDTO, Long id) {
         Doctor doctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new DoctorNotFoundException(id.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(id.toString(), id));
         BeanUtils.copyProperties(doctorDTO, doctor);
         Doctor saved = doctorRepository.save(doctor);
         DoctorDTO responseDTO = new DoctorDTO();
@@ -89,9 +90,9 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
 
     public DoctorDTO addPatient(Long doctorId, Long patientId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString(), doctorId));
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString(), patientId));
         doctor.getPatients().add(patient);
         Doctor saved = doctorRepository.save(doctor);
         DoctorDTO responseDTO = new DoctorDTO();
@@ -105,9 +106,9 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
 
     public DoctorDTO removeObservedPatient(Long doctorId, Long patientId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString(), doctorId));
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString(), patientId));
         doctor.getPatients().remove(patient);
         Doctor saved = doctorRepository.save(doctor);
         DoctorDTO responseDTO = new DoctorDTO();
@@ -118,7 +119,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
 
     public Set<DoctorDTO> getDoctorsByPatientId(Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
         Set<Doctor> doctors = patient.getDoctors();
         return DtoMapper.mapToDoctorDTOs(doctors);
     }

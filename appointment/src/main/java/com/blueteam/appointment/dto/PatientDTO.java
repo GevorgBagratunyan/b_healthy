@@ -1,9 +1,6 @@
 package com.blueteam.appointment.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +9,8 @@ public class PatientDTO implements DTO{
     private Long patientId;
     @NotNull
     private Long objId;
+    @NotEmpty
+    private String name;
     @Email
     private String email;
     @NotBlank
@@ -57,5 +56,13 @@ public class PatientDTO implements DTO{
 
     public void setAppointmentDTOs(List<AppointmentDTO> appointmentDTOs) {
         this.appointmentDTOs = appointmentDTOs;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

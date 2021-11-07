@@ -42,7 +42,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime date = LocalDateTime.parse(str, dtf);
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorNotFoundException(String.valueOf(doctorId)));
+                .orElseThrow(() -> new DoctorNotFoundException(String.valueOf(doctorId), appointmentDTO));
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException(String.valueOf(patientId)));
         Appointment appointment = new Appointment();

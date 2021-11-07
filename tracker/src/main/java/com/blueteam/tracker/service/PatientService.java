@@ -59,7 +59,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
     public PatientDTO delete(Long id) {
         PatientDTO responseDTO = new PatientDTO();
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
         BeanUtils.copyProperties(patient, responseDTO);
         responseDTO.setPatientId(patient.getId());
         patientRepository.deleteById(id);
@@ -69,7 +69,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
     @Override
     public PatientDTO get(Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
         PatientDTO responseDTO = new PatientDTO();
         BeanUtils.copyProperties(patient, responseDTO);
         responseDTO.setPatientId(patient.getId());
@@ -80,7 +80,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
     @Override
     public PatientDTO update(PatientDTO patientDTO, Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
         BeanUtils.copyProperties(patientDTO, patient);
         Patient saved = patientRepository.save(patient);
         PatientDTO responseDTO = new PatientDTO();
@@ -99,7 +99,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     public void trackHemodynamicParams(HemodynamicaDTO hemodynamicaDTO, Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
         Hemodynamica hemodynamica = new Hemodynamica();
         BeanUtils.copyProperties(hemodynamicaDTO, hemodynamica);
         hemodynamica.setObservedPatient(patient);
@@ -113,9 +113,9 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     public PatientDTO addDoctor(Long doctorId, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString(), patientId));
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString(), doctorId));
         patient.addObserver(doctor);
         Patient saved = patientRepository.save(patient);
         PatientDTO responseDTO = new PatientDTO();
@@ -129,9 +129,9 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     public PatientDTO removeDoctor(Long doctorId, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
-                .orElseThrow(() -> new PatientNotFoundException(patientId.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(patientId.toString(), patientId));
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString(), doctorId));
         patient.removeObserver(doctor);
         Patient saved = patientRepository.save(patient);
         PatientDTO responseDTO = new PatientDTO();
@@ -142,14 +142,14 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     public List<PatientDTO> getPatientsByDoctorId(Long doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString()));
+                .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString(), doctorId));
         List<Patient> patients = doctor.getPatients();
         return DtoMapper.mapToPatientDTOs(patients);
     }
 
     public List<HemodynamicaDTO> getCurrentHemodynamics(Long id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
         List<Hemodynamica> hemodynamics = patient.getHemodynamics();
         List<HemodynamicaDTO> hemodynamicaDTOs = new ArrayList<>();
         for(Hemodynamica hemodynamica : hemodynamics) {
@@ -162,7 +162,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
     public PatientDTO setTrackingOnOrOff(Long id, Boolean isTracking) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new PatientNotFoundException(id.toString()));
+                .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
         patient.setTracking(isTracking);
         Patient saved = patientRepository.save(patient);
         PatientDTO responseDTO = new PatientDTO();

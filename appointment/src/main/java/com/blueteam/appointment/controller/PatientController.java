@@ -5,6 +5,8 @@ import com.blueteam.appointment.service.PatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/appointment/patient")
 public class PatientController {
@@ -17,7 +19,7 @@ public class PatientController {
 
     @PostMapping("/make-appointment")
     public ResponseEntity<Void> makeAnAppointment(
-            @RequestBody AppointmentDTO appointmentDTO) {
+            @Valid @RequestBody AppointmentDTO appointmentDTO) {
         patientService.makeAnAppointment(appointmentDTO);
         return ResponseEntity.ok().build();
     }
