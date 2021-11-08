@@ -14,7 +14,6 @@ public class DoctorDTO implements DTO{
     @Email
     private String email;
     @NotBlank
-    @Pattern(regexp = "^(\\d{3}[- .]?){2}\\d{4}$") //allow optional whitespace, dots, or hyphens (-)
     private String phoneNumber;
     private List<AppointmentDTO> appointmentDTOs = new ArrayList<>();
 

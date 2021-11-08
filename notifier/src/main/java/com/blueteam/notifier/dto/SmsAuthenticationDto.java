@@ -11,8 +11,6 @@ public class SmsAuthenticationDto implements DTO{
     @Size(min = 4, max = 4)
     private String verificationString;
     @NotEmpty
-    @Pattern(regexp = "^(\\d{3}[- .]?){2}\\d{4}$",
-            message = "Phone number must contain digits, whitespaces, dots or hyphens (-)")
     private String phoneNumber;
 
     public String getVerificationString() {

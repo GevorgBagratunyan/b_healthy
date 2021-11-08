@@ -41,21 +41,21 @@ public class PatientController {
 
     @PutMapping("/doctors/add")
     public ResponseEntity<PatientDTO> addObservingDoctor(@RequestParam Long doctorId,
-                                                   @RequestParam Long patientId) {
+                                                         @RequestParam Long patientId) {
         PatientDTO responseDTO = patientService.addDoctor(doctorId, patientId);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @PutMapping("/doctors/remove")
     public ResponseEntity<PatientDTO> removeObservingDoctor(@RequestParam Long doctorId,
-                                                      @RequestParam Long patientId) {
+                                                            @RequestParam Long patientId) {
         PatientDTO responseDTO = patientService.removeDoctor(doctorId, patientId);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public  ResponseEntity<PatientDTO> update(@Valid @RequestBody PatientDTO patientDTO,
-                                        @PathVariable Long id) {
+    public ResponseEntity<PatientDTO> update(@Valid @RequestBody PatientDTO patientDTO,
+                                             @PathVariable Long id) {
         PatientDTO responseDTO = patientService.update(patientDTO, id);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }

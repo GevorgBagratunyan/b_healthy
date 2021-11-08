@@ -8,8 +8,6 @@ import javax.validation.constraints.Pattern;
 public class NotificationDTO implements DTO{
 
     @NotBlank
-    @Pattern(regexp = "^(\\d{3}[- .]?){2}\\d{4}$",
-            message = "Phone number must contain digits, whitespaces, dots or hyphens (-)")
     private String phoneNumber;
     @Email
     private String email;

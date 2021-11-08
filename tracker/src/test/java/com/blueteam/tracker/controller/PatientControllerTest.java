@@ -3,14 +3,15 @@ package com.blueteam.tracker.controller;
 import com.blueteam.tracker.dto.HemodynamicaDTO;
 import com.blueteam.tracker.dto.PatientDTO;
 import com.blueteam.tracker.entity.Doctor;
+import com.blueteam.tracker.entity.Hemodynamica;
 import com.blueteam.tracker.entity.Patient;
-import com.blueteam.tracker.exception.patient.PatientNotFoundException;
+import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.repository.PatientRepository;
 import com.blueteam.tracker.util.SecurityUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,46 +23,79 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
+import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser(username="admin",roles={"ADMIN"})
+@WithMockUser(username = "admin", roles = {"ADMIN"})
 class PatientControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    private static PatientRepository patientRepository;
+    @Autowired
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+    @BeforeEach
+    public void init() {
+        Patient patient = new Patient();
+        patient.setEmail("patient@mail.com");
+        patient.setPhoneNumber("0037499123456");
+        patient.setName("Patient");
+        patient.setObjId(14L);
+        patient.setTracking(false);
+        patientRepository.saveAndFlush(patient);
+
+        Doctor doctor = new Doctor();
+        doctor.setEmail("Doctor@mail.com");
+        doctor.setPhoneNumber("0037499555555");
+        doctor.setName("Doctor");
+        doctor.setObjId(15L);
+        doctorRepository.save(doctor);
+
+    }
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void trackHemodynamica() throws Exception {
-        Patient patient = new Patient();
-        patient.setEmail("patient@mail.com");
-        patient.setPhoneNumber("+37499123456");
-        patient.setName("Patient");
         HemodynamicaDTO hemodynamicaDTO = new HemodynamicaDTO();
-        hemodynamicaDTO.setSaturation(80);
-        hemodynamicaDTO.setHeartRate(150);
-        patientRepository.save(patient);
+        hemodynamicaDTO.setSaturation(95);
+        hemodynamicaDTO.setHeartRate(80);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/track/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
-                .content(objectMapper.writeValueAsString(hemodynamicaDTO)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
+                        .content(objectMapper.writeValueAsString(hemodynamicaDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void setTrackingOnOrOff() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/set-tracking")
+                        .param("id", String.valueOf(1L))
+                        .param("isTracking", String.valueOf(false))
+                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.heartRate").exists());
+                .andExpect(jsonPath("$.patientId").exists());
     }
 
     @Test
-    void setTrackingOnOrOff() {
-    }
+    void addObservingDoctor() throws Exception {
 
-    @Test
-    void addObservingDoctor() {
+        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/doctors/add")
+                        .param("doctorId", String.valueOf(2L))
+                        .param("patientId", String.valueOf(1L))
+                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.patientId").exists());
     }
 
     @Test
@@ -95,7 +129,7 @@ class PatientControllerTest {
         patientDTO.setPhoneNumber("099202020");
         patientDTO.setObjId(14L);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/tracker")
+        mockMvc.perform(MockMvcRequestBuilders.post("/tracker/patient")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
                         .content(objectMapper.writeValueAsString(patientDTO)))
