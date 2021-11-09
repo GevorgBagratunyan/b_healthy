@@ -5,6 +5,8 @@ import com.blueteam.tracker.dto.PatientDTO;
 import com.blueteam.tracker.entity.Doctor;
 import com.blueteam.tracker.entity.Hemodynamica;
 import com.blueteam.tracker.entity.Patient;
+import com.blueteam.tracker.exception.doctor.DoctorNotFoundException;
+import com.blueteam.tracker.exception.patient.PatientNotFoundException;
 import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.repository.PatientRepository;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
@@ -50,6 +52,8 @@ class PatientControllerTest {
     @Autowired
     private DoctorRepository doctorRepository;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeEach
     public void init() {
         Patient patient = new Patient();
@@ -69,10 +73,7 @@ class PatientControllerTest {
         doctor.getPatients().add(patient);
         patientRepository.save(patient); //id 1L
         doctorRepository.save(doctor); // id 2L
-
     }
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void trackHemodynamica() throws Exception {
@@ -147,18 +148,10 @@ class PatientControllerTest {
     }
 
     @Test
-    void getObservedPatientsByDoctorId() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/tracker/patient/doctors/{id}", 2L)
-                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
-                .andExpect(jsonPath("$.[*].name").value(Matchers.hasItem("Patient")))
-                .andExpect(jsonPath("$.[*]").isArray());
-    }
-
-    @Test
     void get() throws Exception {
         Long id = 1L;
         mockMvc.perform(MockMvcRequestBuilders.get("/tracker/patient/{id}", id)
-                .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
+                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$.patientId").value(id));
     }
@@ -177,15 +170,15 @@ class PatientControllerTest {
                 .andExpect(jsonPath("$.patientId").exists());
     }
 
-    // FIX ME !
     @Test
     @Disabled
     void delete() throws Exception {
-        Long id = 1L;
-        mockMvc.perform(MockMvcRequestBuilders.delete("/tracker/patient/{id}", id)
+        Patient patient = new Patient();
+        Patient saved = patientRepository.save(patient);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/tracker/patient/{id}", saved.getId())
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").value(id))
+                .andExpect(jsonPath("$.patientId").value(saved.getId()))
                 .andExpect(jsonPath("$.name").value("Patient"));
     }
 }

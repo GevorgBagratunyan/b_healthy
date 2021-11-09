@@ -31,6 +31,14 @@ public class Doctor{
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    public void addPatient(Patient patient) {
+        this.patients.add(patient);
+    }
+
+    public void removePatient(Patient patient) {
+        this.patients.remove(patient);
+    }
+
     public Long getId() {
         return id;
     }

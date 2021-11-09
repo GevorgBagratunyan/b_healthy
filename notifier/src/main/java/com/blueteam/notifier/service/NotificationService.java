@@ -57,7 +57,7 @@ public class NotificationService {
 
     public void authenticateWithSms(SmsAuthenticationDto smsAuthenticationDto) {
         String phoneNumber = smsAuthenticationDto.getPhoneNumber();
-        String verificationCode = smsAuthenticationDto.getVerificationString();
+        String verificationCode = smsAuthenticationDto.getVerificationCode();
         smsService.sendSms(phoneNumber, verificationCode);
     }
 

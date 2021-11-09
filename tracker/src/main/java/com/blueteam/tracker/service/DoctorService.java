@@ -49,6 +49,10 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
         DoctorDTO responseDTO = new DoctorDTO();
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException(id.toString(), id));
+        List<Patient> patients = doctor.getPatients();
+        for (Patient p : patients) {
+            p.removeObserver(doctor);
+        }
         BeanUtils.copyProperties(doctor, responseDTO);
         responseDTO.setDoctorId(doctor.getId());
         DtoMapper.mapPatientsToPatientDTOs(doctor, responseDTO);

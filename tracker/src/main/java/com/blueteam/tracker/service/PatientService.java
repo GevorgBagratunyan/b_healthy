@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PatientService implements CRUD<PatientDTO, Long> {
@@ -60,6 +61,10 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         PatientDTO responseDTO = new PatientDTO();
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
+        Set<Doctor> doctors = patient.getDoctors();
+        for(Doctor d : doctors) {
+            d.removePatient(patient);
+        }
         BeanUtils.copyProperties(patient, responseDTO);
         responseDTO.setPatientId(patient.getId());
         patientRepository.deleteById(id);
