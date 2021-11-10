@@ -49,8 +49,8 @@ public class PatientController {
     @PutMapping("/doctors/add")
     public ResponseEntity<PatientDTO> addObservingDoctor(@RequestParam Long doctorId,
                                                          @RequestParam Long patientId) {
-        log.info("Add Observing doctor with id: " + doctorId +
-                ", to the list of observing doctors of patients with id: " + patientId);
+        log.info("Add Observing doctor with id: {} to the list of observing doctors " +
+                "of patients with id: {}", doctorId, patientId);
         PatientDTO responseDTO = patientService.addDoctor(doctorId, patientId);
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
@@ -74,14 +74,14 @@ public class PatientController {
     @GetMapping
     public ResponseEntity<List<PatientDTO>> getAll(@RequestBody SearchCriteria criteria) {
 
-        log.info("Get patients => limit: {}, offset: {}", criteria.getLimit(), criteria.getOffset());
+        log.info("Get patients with given search criteria parameters => limit: {}, offset: {}", criteria.getLimit(), criteria.getOffset());
         List<PatientDTO> patientDTOs = patientService.getAll(criteria);
         return new ResponseEntity<>(patientDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/doctors/{id}")
-    public ResponseEntity<List<PatientDTO>> getObservedPatientsByDoctorId(@PathVariable Long id) {
-        log.info("Get observed patients of doctor with id: " + id);
+    public ResponseEntity<List<PatientDTO>> getPatientsByDoctorId(@PathVariable Long id) {
+        log.info("Get observed patients of observer doctor with id: " + id);
         List<PatientDTO> patientDTOs = patientService.getPatientsByDoctorId(id);
         return new ResponseEntity<>(patientDTOs, HttpStatus.OK);
     }
@@ -95,7 +95,7 @@ public class PatientController {
 
     @GetMapping("/current-hemodynamics/{id}")
     public ResponseEntity<List<HemodynamicaDTO>> getCurrentHemodynamica(@PathVariable Long id) {
-        log.info("Get all hemodynamic parametes of patient with id: " + id);
+        log.info("Get all hemodynamic parameters of patient with id: " + id);
         List<HemodynamicaDTO> hemodynamics = patientService.getCurrentHemodynamics(id);
         return new ResponseEntity<>(hemodynamics, HttpStatus.OK);
     }
