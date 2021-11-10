@@ -1,19 +1,19 @@
 package com.blueteam.tracker.controller;
 
-import com.blueteam.tracker.dto.HemodynamicaDTO;
+import com.blueteam.tracker.dto.DoctorDTO;
 import com.blueteam.tracker.dto.PatientDTO;
 import com.blueteam.tracker.entity.Doctor;
 import com.blueteam.tracker.entity.Patient;
 import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.repository.PatientRepository;
-import com.blueteam.tracker.service.DoctorService;
-import com.blueteam.tracker.service.PatientService;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
 import com.blueteam.tracker.util.SecurityUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,30 +24,34 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(username = "admin", roles = {"ADMIN"})
-class PatientControllerTest {
+class DoctorControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private PatientRepository patientRepository;
+    private DoctorRepository doctorRepository;
 
     @Autowired
-    private DoctorRepository doctorRepository;
+    private PatientRepository patientRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    public void init() {
+    void init() {
         Patient patient = new Patient();
         patient.setEmail("patient@mail.com");
         patient.setPhoneNumber("0037499123456");
@@ -68,7 +72,7 @@ class PatientControllerTest {
     }
 
     @AfterEach
-    public void drop() throws Exception {
+    void drop() throws Exception{
         // Disable integrity constraint
         //  List all tables in the (default) PUBLIC schema
         //  Truncate all tables
@@ -107,111 +111,96 @@ class PatientControllerTest {
         s.execute("SET REFERENTIAL_INTEGRITY = TRUE");
         s.close();
         c.close();
-
     }
 
     @Test
-    void trackHemodynamica() throws Exception {
-        HemodynamicaDTO hemodynamicaDTO = new HemodynamicaDTO();
-        hemodynamicaDTO.setSaturation(95);
-        hemodynamicaDTO.setHeartRate(80);
-        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/track/{id}", 1L)
+    @DisplayName("Create Doctor")
+    void createDoctor() throws Exception {
+        DoctorDTO doctorDTO = new DoctorDTO();
+        doctorDTO.setEmail("Doctor@mail.com");
+        doctorDTO.setPhoneNumber("099202020");
+        doctorDTO.setObjId(14L);
+        mockMvc.perform(MockMvcRequestBuilders.post("/tracker/doctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
-                        .content(objectMapper.writeValueAsString(hemodynamicaDTO)))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
-
-    @Test
-    void setTrackingOnOrOff() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/set-tracking")
-                        .param("id", String.valueOf(1L))
-                        .param("isTracking", String.valueOf(false))
-                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
+                        .content(objectMapper.writeValueAsString(doctorDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").exists());
+                .andExpect(jsonPath("$.doctorId").exists());
     }
 
     @Test
-    void addObservingDoctor() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/doctors/add")
+    @DisplayName("Update Doctor")
+    void update() throws Exception{
+        DoctorDTO doctorDTO = new DoctorDTO();
+        doctorDTO.setEmail("Doctor@mail.com");
+        doctorDTO.setPhoneNumber("099202020");
+        doctorDTO.setObjId(14L);
+        mockMvc.perform(MockMvcRequestBuilders.post("/tracker/doctor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
+                        .content(objectMapper.writeValueAsString(doctorDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.doctorId").exists());
+    }
+
+    @Test
+    @DisplayName("Add Observed Patient to Doctor's list of observed patients")
+    void addObservedPatient() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/doctor/patients/add")
                         .param("doctorId", String.valueOf(2L))
                         .param("patientId", String.valueOf(1L))
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").exists());
+                .andExpect(jsonPath("$.doctorId").exists());
     }
 
     @Test
-    void removeObservingDoctor() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/doctors/remove")
-                        .param("doctorId", String.valueOf(2L))
-                        .param("patientId", String.valueOf(1L))
+    @DisplayName("Delete Doctor")
+    void deleteDoctor() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/tracker/doctor/{id}", 2L)
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").exists());
+                .andExpect(jsonPath("$.doctorId").value(2L))
+                .andExpect(jsonPath("$.name").value("Doctor"));
     }
 
     @Test
-    void update() throws Exception {
-        PatientDTO patientDTO = new PatientDTO();
-        patientDTO.setEmail("Patient@mail.com");
-        patientDTO.setPhoneNumber("099202020");
-        patientDTO.setObjId(14L);
-        mockMvc.perform(MockMvcRequestBuilders.put("/tracker/patient/{id}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
-                        .content(objectMapper.writeValueAsString(patientDTO)))
+    @DisplayName("Get Doctor by id")
+    void getDoctorById() throws Exception {
+        Long id = 2L;
+        mockMvc.perform(MockMvcRequestBuilders.get("/tracker/doctor/{id}", id)
+                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").exists());
+                .andExpect(jsonPath("$.doctorId").value(id))
+                .andExpect(jsonPath("$.name").value("Doctor"));
     }
 
     @Test
-    void getAll() throws Exception {
+    @DisplayName("Get all Doctors using search criteria")
+    void getAllDoctorsBySearchCriteria() throws Exception{
         SearchCriteria criteria = new SearchCriteria();
         criteria.setSort("ASC");
         criteria.setLimit(3);
         criteria.setOffset(0);
         criteria.setOrderByFieldName("email");
-        mockMvc.perform(MockMvcRequestBuilders.get("/tracker/patient")
+        mockMvc.perform(MockMvcRequestBuilders.get("/tracker/doctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
                         .content(objectMapper.writeValueAsString(criteria)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.[*].name").value(Matchers.hasItem("Patient")))
+                .andExpect(jsonPath("$.[*].name").value(Matchers.hasItem("Doctor")))
                 .andExpect(jsonPath("$.[*]").isArray());
     }
 
     @Test
-    void get() throws Exception {
+    @DisplayName("Get observing Doctors of patient by patient's id")
+    void getDoctorsByPatientId() throws Exception{
         Long id = 1L;
-        mockMvc.perform(MockMvcRequestBuilders.get("/tracker/patient/{id}", id)
-                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").value(id))
-                .andExpect(jsonPath("$.name").value("Patient"));
-    }
-
-    @Test
-    void create() throws Exception {
-        PatientDTO patientDTO = new PatientDTO();
-        patientDTO.setEmail("Patient@mail.com");
-        patientDTO.setPhoneNumber("099202020");
-        patientDTO.setObjId(14L);
-        mockMvc.perform(MockMvcRequestBuilders.post("/tracker/patient")
+        mockMvc.perform(MockMvcRequestBuilders.get("/tracker/doctor/patients/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT())
-                        .content(objectMapper.writeValueAsString(patientDTO)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").exists());
-    }
-
-    @Test
-    void delete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/tracker/patient/{id}", 1L)
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").value(1L))
-                .andExpect(jsonPath("$.name").value("Patient"));
+                .andExpect(jsonPath("$.[*].name").value(Matchers.hasItem("Doctor")))
+                .andExpect(jsonPath("$.[*]").isArray());
     }
 }

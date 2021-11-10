@@ -11,11 +11,10 @@ public class DoctorDTO implements DTO{
     private Long doctorId;
     @NotNull
     private Long objId;
+    private String name;
     @Email
     private String email;
     @NotBlank
-    @Pattern(regexp = "^(\\d{3}[- .]?){2}\\d{4}$",
-            message = "Phone number must contain digits, whitespaces, dots or hyphens (-)")
     private String phoneNumber;
     private List<PatientDTO> patients = new ArrayList<>();
 
@@ -66,5 +65,13 @@ public class DoctorDTO implements DTO{
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
