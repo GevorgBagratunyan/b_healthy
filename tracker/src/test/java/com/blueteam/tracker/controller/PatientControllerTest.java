@@ -3,39 +3,31 @@ package com.blueteam.tracker.controller;
 import com.blueteam.tracker.dto.HemodynamicaDTO;
 import com.blueteam.tracker.dto.PatientDTO;
 import com.blueteam.tracker.entity.Doctor;
-import com.blueteam.tracker.entity.Hemodynamica;
 import com.blueteam.tracker.entity.Patient;
-import com.blueteam.tracker.exception.doctor.DoctorNotFoundException;
-import com.blueteam.tracker.exception.patient.PatientNotFoundException;
 import com.blueteam.tracker.repository.DoctorRepository;
 import com.blueteam.tracker.repository.PatientRepository;
+import com.blueteam.tracker.service.DoctorService;
+import com.blueteam.tracker.service.PatientService;
 import com.blueteam.tracker.service.criteria.SearchCriteria;
 import com.blueteam.tracker.util.SecurityUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
@@ -51,6 +43,12 @@ class PatientControllerTest {
 
     @Autowired
     private DoctorRepository doctorRepository;
+
+    @Autowired
+    private DoctorService doctorService;
+
+    @Autowired
+    private PatientService patientService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -73,6 +71,49 @@ class PatientControllerTest {
         doctor.getPatients().add(patient);
         patientRepository.save(patient); //id 1L
         doctorRepository.save(doctor); // id 2L
+    }
+
+    @AfterEach
+    public void drop() throws Exception {
+        // Disable integrity constraint
+        //  List all tables in the (default) PUBLIC schema
+        //  Truncate all tables
+        //  List all sequences in the (default) PUBLIC schema
+        //  Reset all sequences
+        //  Re-enable the constraints.
+        Connection c = DriverManager.getConnection("jdbc:h2:mem:med_app", "postgres", "123456");
+        Statement s = c.createStatement();
+
+        // Disable FK
+        s.execute("SET REFERENTIAL_INTEGRITY FALSE");
+
+        // Find all tables and truncate them
+        Set<String> tables = new HashSet<>();
+        ResultSet rs = s.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES  where TABLE_SCHEMA='PUBLIC'");
+        while (rs.next()) {
+            tables.add(rs.getString(1));
+        }
+        rs.close();
+        for (String table : tables) {
+            s.executeUpdate("TRUNCATE TABLE " + table);
+        }
+
+        // Idem for sequences
+        Set<String> sequences = new HashSet<>();
+        rs = s.executeQuery("SELECT SEQUENCE_NAME FROM INFORMATION_SCHEMA.SEQUENCES WHERE SEQUENCE_SCHEMA='PUBLIC'");
+        while (rs.next()) {
+            sequences.add(rs.getString(1));
+        }
+        rs.close();
+        for (String seq : sequences) {
+            s.executeUpdate("ALTER SEQUENCE " + seq + " RESTART WITH 1");
+        }
+
+        // Enable FK
+        s.execute("SET REFERENTIAL_INTEGRITY TRUE");
+        s.close();
+        c.close();
+
     }
 
     @Test
@@ -171,14 +212,11 @@ class PatientControllerTest {
     }
 
     @Test
-    @Disabled
     void delete() throws Exception {
-        Patient patient = new Patient();
-        Patient saved = patientRepository.save(patient);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/tracker/patient/{id}", saved.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete("/tracker/patient/{id}", 1L)
                         .header("Authorization", "Bearer " + SecurityUtils.getAdminJWT()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$.patientId").value(saved.getId()))
+                .andExpect(jsonPath("$.patientId").value(1L))
                 .andExpect(jsonPath("$.name").value("Patient"));
     }
 }
