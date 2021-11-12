@@ -1,7 +1,5 @@
 package com.blueteam.authentication.dto;
 
-
-import com.blueteam.authentication.uservalidation.ValidEmail;
 import com.sun.istack.NotNull;
 
 import javax.validation.constraints.Email;
@@ -50,7 +48,6 @@ public class UserDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
 
     public String getEmail() {

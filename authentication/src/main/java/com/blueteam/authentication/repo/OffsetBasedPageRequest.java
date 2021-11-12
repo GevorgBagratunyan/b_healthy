@@ -4,19 +4,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public class OffsetBasedPageRequest implements Pageable {
-    private int limit;
-    private int offset;
+    private Integer limit;
+    private Integer offset;
+    private Sort sort;
 
 
-    public OffsetBasedPageRequest(int limit, int offset) {
-        if (limit < 1) {
-            throw new IllegalArgumentException("Limit must not be less than one!");
-        }
-        if (offset < 0) {
-            throw new IllegalArgumentException("Offset index must not be less than zero!");
-        }
+    public OffsetBasedPageRequest(Integer limit, Integer offset, Sort sort) {
         this.limit = limit;
         this.offset = offset;
+        this.sort = sort;
+    }
+
+    public OffsetBasedPageRequest(Integer limit, Integer offset) {
+        this(limit, offset, Sort.unsorted());
     }
 
     @Override
@@ -36,29 +36,29 @@ public class OffsetBasedPageRequest implements Pageable {
 
     @Override
     public Sort getSort() {
-        return null;
+        return sort;
     }
 
     @Override
     public Pageable next() {
-        // Typecast possible because number of entries cannot be bigger than integer (primary key is integer)
-        return new OffsetBasedPageRequest(getPageSize(), (int) (getOffset() + getPageSize()));
+        return new OffsetBasedPageRequest(getPageSize(), (int) (getOffset() + getPageSize()), sort);
     }
 
-    public Pageable previous() {
-        // The integers are positive. Subtracting does not let them become bigger than integer.
-        return hasPrevious() ?
-                new OffsetBasedPageRequest(getPageSize(), (int) (getOffset() - getPageSize())) : this;
-    }
 
     @Override
     public Pageable previousOrFirst() {
         return hasPrevious() ? previous() : first();
+
+    }
+
+    public Pageable previous() {
+        return hasPrevious() ?
+                new OffsetBasedPageRequest(getPageSize(), (int) (getOffset() - getPageSize()), sort) : this;
     }
 
     @Override
     public Pageable first() {
-        return new OffsetBasedPageRequest(getPageSize(), 0);
+        return new OffsetBasedPageRequest(getPageSize(), 0, sort);
     }
 
     @Override

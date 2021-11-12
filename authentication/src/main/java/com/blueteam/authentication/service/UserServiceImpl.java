@@ -1,5 +1,7 @@
 package com.blueteam.authentication.service;
 
+import com.blueteam.authentication.controller.NotificationClient;
+import com.blueteam.authentication.dto.NotificationEmailDTO;
 import com.blueteam.authentication.dto.UserDTO;
 import com.blueteam.authentication.entity.Role;
 import com.blueteam.authentication.entity.User;
@@ -8,33 +10,29 @@ import com.blueteam.authentication.repo.OffsetBasedPageRequest;
 import com.blueteam.authentication.repo.RoleRepository;
 import com.blueteam.authentication.repo.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.service.UnknownServiceException;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceAlreadyExistsException;
 import java.awt.print.Pageable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+
     }
 
     @Override
@@ -47,6 +45,11 @@ public class UserServiceImpl implements UserService{
     public User getUser(String username) {
 
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -74,16 +77,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User registerNewUserAccount(UserDTO userDTO)  {
-        if (userRepository.findByEmail(userDTO.getEmail())!=null) {
+    public User registerNewUserAccount(UserDTO userDTO) {
+        if (userRepository.findByEmail(userDTO.getEmail()) != null) {
             throw new EmailAlreadyExistsException(userDTO.getEmail());
-//            try {
-//                throw new InstanceAlreadyExistsException("There is an account with that email address: "
-//                        + userDTO.getEmail());
-//            } catch (InstanceAlreadyExistsException e) {
-//                e.printStackTrace();
-//            }
-
         }
 
         User user = new User();
@@ -93,22 +89,37 @@ public class UserServiceImpl implements UserService{
         user.setLastName(userDTO.getLastName());
         user.setPassword(userDTO.getPassword());
         user.setEmail(userDTO.getEmail());
+        user.setEnabled(false);
         user.setRoles(Arrays.asList(role));
+        Random rand = new Random();
+        String code = RandomString.make(4);
+        user.setRandomValue(code);
+        User userSaved = userRepository.save(user);
+        notify(userSaved);
 
-        return userRepository.save(user);
+        return userSaved;
     }
-//    private boolean emailExists(String email) {
-//        return userRepository.findByEmail(email) != null;
-//    }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = userRepository.findByUsername(username);
-//        if (user == null)
-//            throw new UsernameNotFoundException("This username doesn't exist");
-//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        user.getRoles().forEach(role->{authorities.add(new SimpleGrantedAuthority(role.getName()));
-//        });
-//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
-//    }
+    private void notify(User user) {
+        NotificationEmailDTO emailDTO = new NotificationEmailDTO();
+        emailDTO.setEmail(user.getEmail());
+        emailDTO.setVerificationCode(user.getRandomValue());
+        NotificationClient.sendNotificationEmail(emailDTO);
+    }
+
+    public boolean verify(String verificationCode) {
+        User user = userRepository.findByRandomValue(verificationCode);
+
+        if (user == null || user.isEnabled()) {
+            return false;
+        } else {
+            user.setRandomValue(null);
+            user.setEnabled(true);
+            userRepository.save(user);
+
+            return true;
+        }
+
+    }
+
 }

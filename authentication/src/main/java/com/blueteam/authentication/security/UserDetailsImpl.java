@@ -11,13 +11,15 @@ import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private User user;
-    public UserDetailsImpl(User user){
-        this.user=user;
+
+    public UserDetailsImpl(User user) {
+        this.user = user;
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities=user.getRoles().stream()
-                .map(auth->new SimpleGrantedAuthority(auth.getName()))
+        Set<GrantedAuthority> authorities = user.getRoles().stream()
+                .map(auth -> new SimpleGrantedAuthority(auth.getName()))
                 .collect(Collectors.toSet());
         return authorities;
     }
@@ -49,6 +51,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnabled();
     }
 }

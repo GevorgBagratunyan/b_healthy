@@ -21,12 +21,32 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role",schema = "user_schema")
+    @Column(name = "is_active")
+    private boolean enabled = false;
+    @Column
+    private String randomValue;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", schema = "user_schema")
     private Collection<Role> roles = new ArrayList<Role>();
 
     public User() {
 
+    }
+
+    public String getRandomValue() {
+        return randomValue;
+    }
+
+    public void setRandomValue(String randomValue) {
+        this.randomValue = randomValue;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Collection<Role> getRoles() {

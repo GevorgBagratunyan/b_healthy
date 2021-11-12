@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(new CustomAuthenticationFilter(authenticationManager()))
-                .addFilter(new CustomAuthorizationFilter(authenticationManager(),userRepository))
+                .addFilter(new CustomAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/user/users/save").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
@@ -55,7 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").hasAuthority("ADMIN")
                 .antMatchers("/user/**").authenticated();
     }
-
 
 
     @Bean
