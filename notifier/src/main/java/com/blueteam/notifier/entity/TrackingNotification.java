@@ -73,6 +73,14 @@ public class TrackingNotification {
         this.notificationDate = notificationDate;
     }
 
+    public String getAlertMsg() {
+        return alertMsg;
+    }
+
+    public void setAlertMsg(String alertMsg) {
+        this.alertMsg = alertMsg;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

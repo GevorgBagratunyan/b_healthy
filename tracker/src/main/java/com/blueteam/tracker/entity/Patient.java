@@ -72,11 +72,6 @@ public class Patient{
 
     public void addHemodynamicParameter(Hemodynamica hemodynamica) {
         this.hemodynamics.add(hemodynamica);
-        //if a significant amount of information is recorded, remove (first)old 100 records
-        //This list keeps records for 7 days -> 7days*24hours*60minutes = 10080
-        if (this.hemodynamics.size() > 10080) {
-            this.hemodynamics.subList(0, 100).clear();
-        }
     }
 
     public Long getId() {

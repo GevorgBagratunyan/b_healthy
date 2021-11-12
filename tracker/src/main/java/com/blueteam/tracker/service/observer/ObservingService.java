@@ -22,12 +22,18 @@ public class ObservingService {
         if (hemodynamics.size() < 10) {
             return;
         }
+        //if a significant amount of information is recorded, remove (first)old 100 records
+        //This list keeps records for 7 days -> 7days*24hours*60minutes = 10080
+        if (hemodynamics.size() > 10080) {
+            hemodynamics.subList(0, 100).clear();
+        }
+        Hemodynamica avg = calculateAvgHemodynamica(hemodynamics);
         if (isDangerous(hemodynamics)) {
-            String msg = "Patient -> " + name +" with id: " +
-                    objId +" ,and with phone number: " + phoneNumber +
+            String msg = "Patient -> " + name + " with id: " +
+                    objId + " ,and with phone number: " + phoneNumber +
                     " ,has dangerous Hemodynamic parameters !!!" +
-                    "\nHeart rate is: " + hemodynamica.getHeartRate() +
-                    ", SpO2 is: " + hemodynamica.getSaturation();
+                    "\nHeart rate is: " + avg.getHeartRate() +
+                    ", SpO2 is: " + avg.getSaturation();
             notifyObservers(objId, name, msg, doctors, hemodynamics);
         }
     }

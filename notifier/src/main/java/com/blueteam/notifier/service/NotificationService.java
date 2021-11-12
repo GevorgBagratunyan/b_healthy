@@ -44,6 +44,8 @@ public class NotificationService {
         contacts.setDoctorsPhoneNumber(phoneNumber);
 
         TrackingNotification notification = new TrackingNotification();
+        notification.setAlertMsg(alertMsg);
+        notification.setObjId(notificationDTO.getObjId());
         notification.setHemodynamica(hemodynamica);
         notification.setDoctorContacts(contacts);
         if (email != null) {
