@@ -1,7 +1,6 @@
 package com.blueteam.authentication.controller;
 
 import com.blueteam.authentication.dto.NotificationEmailDTO;
-import com.blueteam.authentication.dto.NotificationSmsDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,8 +17,5 @@ public class NotificationClient {
         REST_TEMPLATE.postForEntity(EMAIL_AUTHENTICATION_API, emailDTO, Void.class);
     }
 
-    public static void sendNotificationSms(NotificationSmsDTO smsDTO) {
-        REST_TEMPLATE.postForEntity(EMAIL_AUTHENTICATION_API, smsDTO, Void.class);
-    }
 
 }
