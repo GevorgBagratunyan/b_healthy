@@ -110,7 +110,8 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         hemodynamica.setObservedPatient(patient);
         hemodynamicaRepository.save(hemodynamica);
         if(patient.getTracking()) {
-            observingService.observe(patient.getObjId(), hemodynamica,
+            observingService.observe(patient.getObjId(), patient.getName(),
+                    patient.getPhoneNumber(), hemodynamica,
                     patient.getDoctors(), patient.getHemodynamics());
         }
         patientRepository.save(patient);

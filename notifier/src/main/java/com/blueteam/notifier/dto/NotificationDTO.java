@@ -7,7 +7,6 @@ import javax.validation.constraints.Pattern;
 
 public class NotificationDTO implements DTO{
 
-    @NotBlank
     private String phoneNumber;
     @Email
     private String email;
@@ -16,7 +15,6 @@ public class NotificationDTO implements DTO{
     @NotNull
     private HemodynamicaDTO currentAvgHemodynamica;
     private String alertMsg;
-    @NotNull
     private Long objId; //Patient's id
 
     public HemodynamicaDTO getCurrentAvgHemodynamica() {

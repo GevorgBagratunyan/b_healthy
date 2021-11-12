@@ -1,5 +1,6 @@
 package com.blueteam.tracker.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
@@ -11,8 +12,7 @@ public class NotificationDTO implements DTO{
     private String name;
     private HemodynamicaDTO currentAvgHemodynamica;
     private String alertMsg;
-    @NotNull
-    private Long objId; //Patient's id
+    private Long objId;
 
     public HemodynamicaDTO getCurrentAvgHemodynamica() {
         return currentAvgHemodynamica;

@@ -15,7 +15,7 @@ import java.util.Set;
 public class ObservingService {
 
     //Notifies all observing doctors when hemodynamic parameters are dangerous
-    public void observe(Long objId, Hemodynamica hemodynamica,
+    public void observe(Long objId, String name, String phoneNumber, Hemodynamica hemodynamica,
                         Set<Doctor> doctors, List<Hemodynamica> hemodynamics) {
         hemodynamics.add(hemodynamica);
 
@@ -23,15 +23,17 @@ public class ObservingService {
             return;
         }
         if (isDangerous(hemodynamics)) {
-            String msg = "Patient with id -> " + objId + ": " +
-                    "has dangerous Hemodynamic parameters !!!" + ".\nHeart rate is: " +
-                    hemodynamica.getHeartRate() +
+            String msg = "Patient -> " + name +" with id: " +
+                    objId +" ,and with phone number: " + phoneNumber +
+                    " ,has dangerous Hemodynamic parameters !!!" +
+                    "\nHeart rate is: " + hemodynamica.getHeartRate() +
                     ", SpO2 is: " + hemodynamica.getSaturation();
-            notifyObservers(objId, msg, doctors, hemodynamics);
+            notifyObservers(objId, name, msg, doctors, hemodynamics);
         }
     }
 
-    private void notifyObservers(Long objId, String msg, Set<Doctor> doctors, List<Hemodynamica> hemodynamics) {
+    private void notifyObservers(Long objId, String name, String msg, Set<Doctor> doctors,
+                                 List<Hemodynamica> hemodynamics) {
         Hemodynamica avg = calculateAvgHemodynamica(hemodynamics);
         for (Doctor doctor : doctors) {
             NotificationDTO notificationDTO = new NotificationDTO();
@@ -40,6 +42,7 @@ public class ObservingService {
             notificationDTO.setAlertMsg(msg);
             notificationDTO.setCurrentAvgHemodynamica(hemodynamicaDTO);
             notificationDTO.setObjId(objId);
+            notificationDTO.setName(name);
             notificationDTO.setEmail(doctor.getEmail());
             notificationDTO.setPhoneNumber(doctor.getPhoneNumber());
             RestTemplateClient.sendNotification(notificationDTO);
@@ -58,7 +61,7 @@ public class ObservingService {
     private Hemodynamica calculateAvgHemodynamica(List<Hemodynamica> hemodynamics) {
         Integer sumHR = 0;
         Integer sumSAT = 0;
-        //Grab teh last 10 records and calculate
+        //Grab the last 10 records and calculate
         for (int i = 1; i < 11; i++) {
             Hemodynamica hemodynamica = hemodynamics.get(hemodynamics.size() - i);
             sumHR += hemodynamica.getHeartRate();

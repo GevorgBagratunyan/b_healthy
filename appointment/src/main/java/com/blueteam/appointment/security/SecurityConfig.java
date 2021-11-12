@@ -19,9 +19,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtTokenAuthorizationFilter(authenticationManager()))
                 .authorizeRequests()
-                // allow all who are accessing "auth" service
-                .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                // allow all who are accessing "login" service
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/**").permitAll() // ITS TEMPORARY antMatcher FOR TESTING PURPOSES ONLY!
+                .antMatchers("/appointment/patient/**").hasAnyAuthority("USER", "ADMIN")
+                .antMatchers("/appointment/doctor/**").hasAnyAuthority("DOCTOR", "ADMIN")
                 .anyRequest().authenticated();
     }
 
