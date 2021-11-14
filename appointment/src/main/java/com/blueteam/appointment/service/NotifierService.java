@@ -10,6 +10,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotifierService {
 
+    private final RestTemplateClient restTemplateClient;
+
+    public NotifierService(RestTemplateClient restTemplateClient) {
+        this.restTemplateClient = restTemplateClient;
+    }
+
     public void sendNotificationToPatient(Appointment appointment, Boolean isAccepted) {
         Patient patient = appointment.getPatient();
         String phoneNumber = patient.getPhoneNumber();
@@ -26,7 +32,7 @@ public class NotifierService {
                     ", the appointment with a doctor " + doctorName + " is declined";
         }
         NotificationDTO notificationDTO = new NotificationDTO(phoneNumber, email, subject, msg);
-        RestTemplateClient.sendNotificationToPatient(notificationDTO);
+        restTemplateClient.sendNotificationToPatient(notificationDTO);
     }
 
     public void sendNotificationToDoctor(Appointment appointment) {
@@ -40,6 +46,6 @@ public class NotifierService {
         msg = "Dear " + doctorName +
                 ", the appointment with a patient " + patientName + " is canceled";
         NotificationDTO notificationDTO = new NotificationDTO(phoneNumber, email, subject, msg);
-        RestTemplateClient.sendNotificationToDoctor(notificationDTO);
+        restTemplateClient.sendNotificationToDoctor(notificationDTO);
     }
 }

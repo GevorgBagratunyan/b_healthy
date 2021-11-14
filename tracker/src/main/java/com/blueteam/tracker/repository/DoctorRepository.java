@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    @Query("SELECT d FROM Doctor d JOIN FETCH d.patients p WHERE d.id = ?1")
+    @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.patients p WHERE d.id = ?1")
     Optional<Doctor> findById(Long id);
 }

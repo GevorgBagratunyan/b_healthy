@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
 
 
     @Override
+    @Transactional
     public PatientDTO create(PatientDTO patientDTO) {
         Patient patient = new Patient();
         BeanUtils.copyProperties(patientDTO, patient);
@@ -57,6 +59,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
     }
 
     @Override
+    @Transactional
     public PatientDTO delete(Long id) {
         PatientDTO responseDTO = new PatientDTO();
         Patient patient = patientRepository.findById(id)
@@ -83,6 +86,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
     }
 
     @Override
+    @Transactional
     public PatientDTO update(PatientDTO patientDTO, Long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
@@ -102,6 +106,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         return DtoMapper.mapToPatientDTOs(patients);
     }
 
+    @Transactional
     public void trackHemodynamicParams(HemodynamicaDTO hemodynamicaDTO, Long id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));
@@ -117,28 +122,35 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         patientRepository.save(patient);
     }
 
+    @Transactional
     public PatientDTO addDoctor(Long doctorId, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException(patientId.toString(), patientId));
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString(), doctorId));
         patient.addObserver(doctor);
+        doctor.addPatient(patient);
+        doctorRepository.save(doctor);
         Patient saved = patientRepository.save(patient);
         PatientDTO responseDTO = new PatientDTO();
         BeanUtils.copyProperties(saved, responseDTO);
         DoctorDTO doctorDTO = new DoctorDTO();
         BeanUtils.copyProperties(doctor, doctorDTO);
+        doctorDTO.setDoctorId(doctor.getId());
         responseDTO.getDoctors().add(doctorDTO);
         responseDTO.setPatientId(saved.getId());
         return responseDTO;
     }
 
+    @Transactional
     public PatientDTO removeDoctor(Long doctorId, Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException(patientId.toString(), patientId));
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException(doctorId.toString(), doctorId));
         patient.removeObserver(doctor);
+        doctor.removePatient(patient);
+        doctorRepository.save(doctor);
         Patient saved = patientRepository.save(patient);
         PatientDTO responseDTO = new PatientDTO();
         BeanUtils.copyProperties(saved, responseDTO);
@@ -166,6 +178,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         return hemodynamicaDTOs;
     }
 
+    @Transactional
     public PatientDTO setTrackingOnOrOff(Long id, Boolean isTracking) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException(id.toString(), id));

@@ -34,15 +34,12 @@ import static org.mockito.Mockito.times;
 @SpringBootTest
 class PatientServiceTest {
 
-    //Used to simulate the behavior of a real object
     @Mock
     private PatientRepository patientRepository;
 
     @Mock
     private DoctorRepository doctorRepository;
 
-    //Creates an instance of the class and injects the mock
-    //created with the @Mock annotation into this instance
     @InjectMocks
     private PatientService patientService;
 

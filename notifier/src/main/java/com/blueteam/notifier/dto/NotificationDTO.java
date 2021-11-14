@@ -72,4 +72,17 @@ public class NotificationDTO implements DTO{
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+    @Override
+    public String toString() {
+        return "NotificationDTO{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", subject='" + subject + '\'' +
+                ", msg='" + msg + '\'' +
+                ", currentAvgHemodynamica=" + currentAvgHemodynamica +
+                ", alertMsg='" + alertMsg + '\'' +
+                ", objId=" + objId +
+                '}';
+    }
 }

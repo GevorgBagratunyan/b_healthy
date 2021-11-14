@@ -8,9 +8,11 @@ import com.blueteam.appointment.exception.doctor.DoctorNotFoundException;
 import com.blueteam.appointment.repository.AppointmentRepository;
 import com.blueteam.appointment.repository.DoctorRepository;
 import com.blueteam.appointment.service.crud.CRUD;
-import com.blueteam.appointment.service.util.Mapper;
+import com.blueteam.appointment.service.util.AppointmentMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 public class DoctorService implements CRUD<DoctorDTO, Long> {
@@ -38,6 +40,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     }
 
     @Override
+    @Transactional
     public DoctorDTO create(DoctorDTO doctorDTO) {
         Doctor doctor = new Doctor();
         BeanUtils.copyProperties(doctorDTO, doctor);
@@ -49,13 +52,14 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
     }
 
     @Override
+    @Transactional
     public DoctorDTO delete(Long id) {
         DoctorDTO responseDTO = new DoctorDTO();
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException(id.toString(), id));
         BeanUtils.copyProperties(doctor, responseDTO);
         responseDTO.setDoctorId(doctor.getId());
-        Mapper.mapAppointmentsListToAppointmentDTOsList(doctor.getAppointments(),
+        AppointmentMapper.mapAppointmentsListToAppointmentDTOsList(doctor.getAppointments(),
                 responseDTO.getAppointmentDTOs());
         doctorRepository.deleteById(id);
         return responseDTO;
@@ -68,12 +72,13 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
         DoctorDTO doctorDTO = new DoctorDTO();
         BeanUtils.copyProperties(doctor, doctorDTO);
         doctorDTO.setDoctorId(doctor.getId());
-        Mapper.mapAppointmentsListToAppointmentDTOsList(doctor.getAppointments(),
+        AppointmentMapper.mapAppointmentsListToAppointmentDTOsList(doctor.getAppointments(),
                 doctorDTO.getAppointmentDTOs());
         return doctorDTO;
     }
 
     @Override
+    @Transactional
     public DoctorDTO update(DoctorDTO doctorDTO, Long id) {
         Doctor doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException(id.toString(), id));
@@ -81,7 +86,7 @@ public class DoctorService implements CRUD<DoctorDTO, Long> {
         Doctor saved = doctorRepository.save(doctor);
         DoctorDTO responseDTO = new DoctorDTO();
         BeanUtils.copyProperties(saved, responseDTO);
-        Mapper.mapAppointmentsListToAppointmentDTOsList(saved.getAppointments(),
+        AppointmentMapper.mapAppointmentsListToAppointmentDTOsList(saved.getAppointments(),
                 responseDTO.getAppointmentDTOs());
         responseDTO.setDoctorId(saved.getId());
         return responseDTO;

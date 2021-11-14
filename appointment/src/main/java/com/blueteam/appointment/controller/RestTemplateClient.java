@@ -1,22 +1,29 @@
 package com.blueteam.appointment.controller;
 
 import com.blueteam.appointment.dto.NotificationDTO;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 
 @Component
 public class RestTemplateClient {
-    private static final String NOTIFY_DOCTOR_API = "http://localhost:8082/notifier/notify/doctor";
-    private static final String NOTIFY_PATIENT_API = "http://localhost:8082/notifier/notify/patient";
-    private static final RestTemplate REST_TEMPLATE = new RestTemplate();
+    @Value("${NOTIFY_DOCTOR_API}")
+    private String NOTIFY_DOCTOR_API;
+    @Value("${NOTIFY_PATIENT_API}")
+    private String NOTIFY_PATIENT_API;
+    private final RestTemplate restTemplate;
 
-    public static void sendNotificationToDoctor(NotificationDTO notificationDTO) {
-        REST_TEMPLATE.postForEntity(NOTIFY_DOCTOR_API, notificationDTO, Void.class);
+    public RestTemplateClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    public static void sendNotificationToPatient(NotificationDTO notificationDTO) {
-        REST_TEMPLATE.postForEntity(NOTIFY_PATIENT_API, notificationDTO, Void.class);
+    public void sendNotificationToDoctor(NotificationDTO notificationDTO) {
+        restTemplate.postForEntity(NOTIFY_DOCTOR_API, notificationDTO, Void.class);
+    }
+
+    public void sendNotificationToPatient(NotificationDTO notificationDTO) {
+        restTemplate.postForEntity(NOTIFY_PATIENT_API, notificationDTO, Void.class);
     }
 
 }

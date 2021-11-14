@@ -21,4 +21,11 @@ public class ResponseError {
         return data;
     }
 
+    @Override
+    public String toString() {
+        return "ResponseError{" +
+                "message='" + message + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

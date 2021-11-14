@@ -1,7 +1,9 @@
-package com.blueteam.tracker.exception.validation;
+package com.blueteam.appointment.exception;
 
-import com.blueteam.tracker.exception.ResponseError;
-import com.blueteam.tracker.exception.patient.PatientExceptionHandler;
+import com.blueteam.appointment.exception.appointment.AppointmentNotFoundException;
+import com.blueteam.appointment.exception.doctor.DoctorNotFoundException;
+import com.blueteam.appointment.exception.patient.PatientNotFoundException;
+import com.blueteam.appointment.exception.validation.ValidationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,9 +18,33 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.List;
 
 @ControllerAdvice
-public class ValidationExceptionHandler {
+public class GlobalExceptionHandler {
 
-    private final Logger log = LoggerFactory.getLogger(PatientExceptionHandler.class);
+    private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(AppointmentNotFoundException.class)
+    public ResponseEntity<Object> handleAppointmentNotFoundException(AppointmentNotFoundException ex) {
+        ResponseError responseError = new ResponseError(
+                ex.getMessage(), "No additional information");
+        log.error("An Exception occurred while retrieving the data -> {}", responseError);
+        return new ResponseEntity<>(responseError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DoctorNotFoundException.class)
+    public ResponseEntity<ResponseError> handleDoctorNotFoundException(DoctorNotFoundException ex) {
+        ResponseError responseError = new ResponseError(
+                ex.getMessage(), "No additional information");
+        log.error("An Exception occurred while retrieving the data -> {}", responseError);
+        return new ResponseEntity<>(responseError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PatientNotFoundException.class)
+    public ResponseEntity<ResponseError> handlePatientNotFoundException(PatientNotFoundException ex) {
+        ResponseError responseError = new ResponseError(
+                ex.getMessage(), "No additional information");
+        log.error("An Exception occurred while retrieving the data -> {}", responseError);
+        return new ResponseEntity<>(responseError, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ResponseError> handleBindingException(BindException ex) {
@@ -45,8 +71,7 @@ public class ValidationExceptionHandler {
     public ResponseEntity<ResponseError> handleRuntimeException(RuntimeException ex) {
         ResponseError responseError = new ResponseError(
                 "An unhandled RuntimeException was thrown", ex.getMessage());
-        log.error("An Exception occurred during validation -> {}", responseError);
+        log.error("An unhandled RuntimeException was thrown -> {}", responseError);
         return new ResponseEntity<>(responseError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 }

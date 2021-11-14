@@ -28,4 +28,12 @@ public class EmailAuthenticationDto implements DTO{
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
     }
+
+    @Override
+    public String toString() {
+        return "EmailAuthenticationDto{" +
+                "verificationCode='" + verificationCode + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

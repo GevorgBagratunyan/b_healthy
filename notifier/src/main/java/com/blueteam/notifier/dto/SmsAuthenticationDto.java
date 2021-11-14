@@ -27,4 +27,12 @@ public class SmsAuthenticationDto implements DTO{
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @Override
+    public String toString() {
+        return "SmsAuthenticationDto{" +
+                "verificationCode='" + verificationCode + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
+    }
 }

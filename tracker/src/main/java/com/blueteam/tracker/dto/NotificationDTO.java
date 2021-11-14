@@ -1,11 +1,6 @@
 package com.blueteam.tracker.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import java.util.Map;
-
 public class NotificationDTO implements DTO{
-
 
     private String phoneNumber;
     private String email;
@@ -60,5 +55,17 @@ public class NotificationDTO implements DTO{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationDTO{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", currentAvgHemodynamica=" + currentAvgHemodynamica +
+                ", alertMsg='" + alertMsg + '\'' +
+                ", objId=" + objId +
+                '}';
     }
 }

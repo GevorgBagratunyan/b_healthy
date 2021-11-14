@@ -14,6 +14,7 @@ import com.blueteam.appointment.repository.PatientRepository;
 import com.blueteam.appointment.service.crud.CRUD;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -35,6 +36,7 @@ public class PatientService implements CRUD<PatientDTO, Long> {
         this.doctorRepository = doctorRepository;
     }
 
+    @Transactional
     public void makeAnAppointment(AppointmentDTO appointmentDTO) {
         Long doctorId = appointmentDTO.getDoctorId();
         Long patientId = appointmentDTO.getPatientId();

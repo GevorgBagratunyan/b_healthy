@@ -21,7 +21,7 @@ public class Patient{
     @Column(name = "object_id")
     private Long objId;
 
-    @ManyToMany(mappedBy = "patients", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "patients", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Doctor> doctors = new HashSet<>();
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL,

@@ -1,6 +1,7 @@
-package com.blueteam.notifier.exception.validation;
+package com.blueteam.notifier.exception;
 
-import com.blueteam.notifier.exception.ResponseError;
+import com.blueteam.notifier.exception.notification.NotificationException;
+import com.blueteam.notifier.exception.validation.ValidationError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.List;
 
 @ControllerAdvice
-public class ValidationExceptionHandler {
+public class GlobalExceptionHandler {
 
-    private final Logger log = LoggerFactory.getLogger(ValidationExceptionHandler.class);
+
+    private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ResponseError> handleBindingException(BindException ex) {
@@ -40,6 +42,13 @@ public class ValidationExceptionHandler {
         return new ResponseEntity<>(responseError, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NotificationException.class)
+    public ResponseEntity<Object> handleNotificationException(NotificationException ex) {
+        ResponseError responseError = new ResponseError(ex.getMessage(), ex.getData());
+        log.error("An Exception occurred during notification process -> {}", responseError);
+        return new ResponseEntity<>(responseError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ResponseError> handleRuntimeException(RuntimeException ex) {
         ResponseError responseError = new ResponseError(
@@ -47,5 +56,4 @@ public class ValidationExceptionHandler {
         log.error("An unhandled RuntimeException was thrown -> {}", responseError);
         return new ResponseEntity<>(responseError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 }

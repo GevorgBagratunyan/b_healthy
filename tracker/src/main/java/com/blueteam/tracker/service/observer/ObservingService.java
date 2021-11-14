@@ -14,6 +14,12 @@ import java.util.Set;
 @Service
 public class ObservingService {
 
+    private final RestTemplateClient restTemplateClient;
+
+    public ObservingService(RestTemplateClient restTemplateClient) {
+        this.restTemplateClient = restTemplateClient;
+    }
+
     //Notifies all observing doctors when hemodynamic parameters are dangerous
     public void observe(Long objId, String name, String phoneNumber, Hemodynamica hemodynamica,
                         Set<Doctor> doctors, List<Hemodynamica> hemodynamics) {
@@ -29,9 +35,9 @@ public class ObservingService {
         }
         Hemodynamica avg = calculateAvgHemodynamica(hemodynamics);
         if (isDangerous(hemodynamics)) {
-            String msg = "Patient -> " + name + " with id: " +
+            String msg = "the patient " + name + " with id: " +
                     objId + " ,and with phone number: " + phoneNumber +
-                    " ,has dangerous Hemodynamic parameters !!!" +
+                    "\nhas dangerous hemodynamic parameters !!!" +
                     "\nHeart rate is: " + avg.getHeartRate() +
                     ", SpO2 is: " + avg.getSaturation();
             notifyObservers(objId, name, msg, doctors, hemodynamics);
@@ -45,13 +51,13 @@ public class ObservingService {
             NotificationDTO notificationDTO = new NotificationDTO();
             HemodynamicaDTO hemodynamicaDTO = new HemodynamicaDTO();
             BeanUtils.copyProperties(avg, hemodynamicaDTO);
-            notificationDTO.setAlertMsg(msg);
+            notificationDTO.setAlertMsg("Dear dr. " + doctor.getName() +", " + msg);
             notificationDTO.setCurrentAvgHemodynamica(hemodynamicaDTO);
             notificationDTO.setObjId(objId);
             notificationDTO.setName(name);
             notificationDTO.setEmail(doctor.getEmail());
             notificationDTO.setPhoneNumber(doctor.getPhoneNumber());
-            RestTemplateClient.sendNotification(notificationDTO);
+            restTemplateClient.sendNotification(notificationDTO);
         }
     }
 
