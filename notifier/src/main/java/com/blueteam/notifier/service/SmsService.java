@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 public class SmsService {
 
     public void sendSms(String phoneNumber, String smsText) {
-        Twilio.init(TwilioConfigs.ACCOUNT_SID, TwilioConfigs.AUTH_TOKEN);
-        MessageCreator message = Message.create(TwilioConfigs.ACCOUNT_SID,
-                new PhoneNumber(phoneNumber),
-                new PhoneNumber(TwilioConfigs.TWILIO_NUMBER),
-                smsText);
-        message.execute();
+//        Twilio.init(TwilioConfigs.ACCOUNT_SID, TwilioConfigs.AUTH_TOKEN);
+//        MessageCreator message = Message.create(TwilioConfigs.ACCOUNT_SID,
+//                new PhoneNumber(phoneNumber),
+//                new PhoneNumber(TwilioConfigs.TWILIO_NUMBER),
+//                smsText);
+//        message.execute();
     }
 }
