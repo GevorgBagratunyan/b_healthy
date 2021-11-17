@@ -1,9 +1,0 @@
-{
-    "email" : "g.bagratunyan@gmail.com"
-    "phoneNumber" : "099209889",
-    "alertMsg": "IN DANDER!!!",
-    "currentAvgHemodynamica" : {
-        "saturation" : 85,
-        "heartRate" : 120
-    }
-}

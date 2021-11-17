@@ -21,10 +21,11 @@ public class Patient{
     @Column(name = "object_id")
     private Long objId;
 
-    @ManyToMany(mappedBy = "patients", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "patients", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Doctor> doctors = new HashSet<>();
 
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL,
+            orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Hemodynamica> hemodynamics = new LinkedList<>();
 
     @Column(name = "observation_started")
@@ -35,6 +36,9 @@ public class Patient{
 
     @Column(name = "updated_date")
     private LocalDate updatedDate;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "email")
     private String email;
@@ -68,11 +72,6 @@ public class Patient{
 
     public void addHemodynamicParameter(Hemodynamica hemodynamica) {
         this.hemodynamics.add(hemodynamica);
-        //if a significant amount of information is recorded, remove (first)old 100 records
-        //This list keeps records for 7 days -> 7days*24hours*60minutes = 10080
-        if (this.hemodynamics.size() > 10080) {
-            this.hemodynamics.subList(0, 100).clear();
-        }
     }
 
     public Long getId() {
@@ -155,6 +154,14 @@ public class Patient{
         isTracking = tracking;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -172,7 +179,11 @@ public class Patient{
     public String toString() {
         return "Patient{" +
                 "id=" + id +
-                ", observerDoctors=" + doctors +
+                ", objId=" + objId +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", isTracking=" + isTracking +
                 '}';
     }
 }

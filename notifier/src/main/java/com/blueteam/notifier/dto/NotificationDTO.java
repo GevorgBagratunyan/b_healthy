@@ -1,14 +1,20 @@
 package com.blueteam.notifier.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class NotificationDTO implements DTO{
 
     private String phoneNumber;
+    @Email
     private String email;
+    private String subject;
+    private String msg;
+    @NotNull
     private HemodynamicaDTO currentAvgHemodynamica;
     private String alertMsg;
-    @NotNull
     private Long objId; //Patient's id
 
     public HemodynamicaDTO getCurrentAvgHemodynamica() {
@@ -49,5 +55,34 @@ public class NotificationDTO implements DTO{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationDTO{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", subject='" + subject + '\'' +
+                ", msg='" + msg + '\'' +
+                ", currentAvgHemodynamica=" + currentAvgHemodynamica +
+                ", alertMsg='" + alertMsg + '\'' +
+                ", objId=" + objId +
+                '}';
     }
 }

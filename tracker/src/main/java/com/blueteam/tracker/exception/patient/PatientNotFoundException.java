@@ -2,8 +2,13 @@ package com.blueteam.tracker.exception.patient;
 
 public class PatientNotFoundException extends RuntimeException {
 
-    public PatientNotFoundException(String patientId) {
-        super(String.format("Patient by id :  {%s}  - Not found", patientId));
+    private final Object data;
+    public PatientNotFoundException(String patientId, Object data) {
+        super(String.format("Patient with given id :  {%s}  - Not found", patientId));
+        this.data = data;
     }
 
+    public Object getData() {
+        return data;
+    }
 }

@@ -1,5 +1,6 @@
 package com.blueteam.notifier.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
@@ -8,6 +9,8 @@ public class EmailAuthenticationDto implements DTO{
     @NotEmpty
     @Size(min = 4, max = 4)
     private String verificationCode;
+    @Email
+    @NotEmpty
     private String email;
 
     public String getEmail() {
@@ -24,5 +27,13 @@ public class EmailAuthenticationDto implements DTO{
 
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
+    }
+
+    @Override
+    public String toString() {
+        return "EmailAuthenticationDto{" +
+                "verificationCode='" + verificationCode + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

@@ -14,8 +14,8 @@ public class PatientDTO implements DTO{
     private Long objId;
     @Email
     private String email;
+    private String name;
     @NotBlank
-    @Pattern(regexp = "^(\\d{3}[- .]?){2}\\d{4}$") //allow optional whitespace, dots, or hyphens (-)
     private String phoneNumber;
     private Boolean isTracking;
     private List<DoctorDTO> doctors = new ArrayList<>();
@@ -75,5 +75,13 @@ public class PatientDTO implements DTO{
 
     public void setTracking(Boolean tracking) {
         isTracking = tracking;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

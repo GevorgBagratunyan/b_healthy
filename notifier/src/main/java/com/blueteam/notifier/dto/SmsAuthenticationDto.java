@@ -8,15 +8,16 @@ public class SmsAuthenticationDto implements DTO{
 
     @NotEmpty
     @Size(min = 4, max = 4)
-    private String verificationString;
+    private String verificationCode;
+    @NotEmpty
     private String phoneNumber;
 
-    public String getVerificationString() {
-        return verificationString;
+    public String getVerificationCode() {
+        return verificationCode;
     }
 
-    public void setVerificationString(String verificationString) {
-        this.verificationString = verificationString;
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 
     public String getPhoneNumber() {
@@ -25,5 +26,13 @@ public class SmsAuthenticationDto implements DTO{
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "SmsAuthenticationDto{" +
+                "verificationCode='" + verificationCode + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                '}';
     }
 }

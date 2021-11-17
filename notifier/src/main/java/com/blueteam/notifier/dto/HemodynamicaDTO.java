@@ -30,4 +30,12 @@ public class HemodynamicaDTO implements DTO{
     public void setHeartRate(Integer heartRate) {
         this.heartRate = heartRate;
     }
+
+    @Override
+    public String toString() {
+        return "HemodynamicaDTO{" +
+                "saturation=" + saturation +
+                ", heartRate=" + heartRate +
+                '}';
+    }
 }

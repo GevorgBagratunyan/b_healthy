@@ -14,32 +14,50 @@ import java.util.Set;
 @Service
 public class ObservingService {
 
+    private final RestTemplateClient restTemplateClient;
+
+    public ObservingService(RestTemplateClient restTemplateClient) {
+        this.restTemplateClient = restTemplateClient;
+    }
+
     //Notifies all observing doctors when hemodynamic parameters are dangerous
-    public void observe(Long objId, Hemodynamica hemodynamica,
+    public void observe(Long objId, String name, String phoneNumber, Hemodynamica hemodynamica,
                         Set<Doctor> doctors, List<Hemodynamica> hemodynamics) {
         hemodynamics.add(hemodynamica);
 
         if (hemodynamics.size() < 10) {
             return;
         }
+        //if a significant amount of information is recorded, remove (first)old 100 records
+        //This list keeps records for 7 days -> 7days*24hours*60minutes = 10080
+        if (hemodynamics.size() > 10080) {
+            hemodynamics.subList(0, 100).clear();
+        }
+        Hemodynamica avg = calculateAvgHemodynamica(hemodynamics);
         if (isDangerous(hemodynamics)) {
-            String msg = "IN DANDER!!!";
-            notifyObservers(objId, msg, doctors, hemodynamics);
+            String msg = "the patient " + name + " with id: " +
+                    objId + " ,and with phone number: " + phoneNumber +
+                    "\nhas dangerous hemodynamic parameters !!!" +
+                    "\nHeart rate is: " + avg.getHeartRate() +
+                    ", SpO2 is: " + avg.getSaturation();
+            notifyObservers(objId, name, msg, doctors, hemodynamics);
         }
     }
 
-    private void notifyObservers(Long objId, String msg, Set<Doctor> doctors, List<Hemodynamica> hemodynamics) {
+    private void notifyObservers(Long objId, String name, String msg, Set<Doctor> doctors,
+                                 List<Hemodynamica> hemodynamics) {
         Hemodynamica avg = calculateAvgHemodynamica(hemodynamics);
         for (Doctor doctor : doctors) {
             NotificationDTO notificationDTO = new NotificationDTO();
             HemodynamicaDTO hemodynamicaDTO = new HemodynamicaDTO();
             BeanUtils.copyProperties(avg, hemodynamicaDTO);
-            notificationDTO.setAlertMsg(msg);
+            notificationDTO.setAlertMsg("Dear dr. " + doctor.getName() +", " + msg);
             notificationDTO.setCurrentAvgHemodynamica(hemodynamicaDTO);
             notificationDTO.setObjId(objId);
+            notificationDTO.setName(name);
             notificationDTO.setEmail(doctor.getEmail());
             notificationDTO.setPhoneNumber(doctor.getPhoneNumber());
-            RestTemplateClient.sendNotification(notificationDTO);
+            restTemplateClient.sendNotification(notificationDTO);
         }
     }
 
@@ -55,7 +73,7 @@ public class ObservingService {
     private Hemodynamica calculateAvgHemodynamica(List<Hemodynamica> hemodynamics) {
         Integer sumHR = 0;
         Integer sumSAT = 0;
-        //Grab teh last 10 records and calculate
+        //Grab the last 10 records and calculate
         for (int i = 1; i < 11; i++) {
             Hemodynamica hemodynamica = hemodynamics.get(hemodynamics.size() - i);
             sumHR += hemodynamica.getHeartRate();
