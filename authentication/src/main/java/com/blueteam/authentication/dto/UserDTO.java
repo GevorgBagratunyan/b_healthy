@@ -16,6 +16,9 @@ public class UserDTO {
     @NotEmpty
     private String lastName;
 
+    @NotEmpty
+    private String username;
+
     @NotNull
     @NotEmpty
     private String password;
@@ -56,6 +59,14 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override

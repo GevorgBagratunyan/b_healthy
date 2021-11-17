@@ -26,7 +26,7 @@ public class User {
     @Column
     private String randomValue;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_role", schema = "user_schema")
+    @JoinTable(name = "user_role")
     private Collection<Role> roles = new ArrayList<Role>();
 
     public User() {
