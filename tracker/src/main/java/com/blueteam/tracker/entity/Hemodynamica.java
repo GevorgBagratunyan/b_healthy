@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "hemodynamica")
+@Table(name = "hemodynamica", indexes = @Index(name = "patient_index", columnList = "patient_id ASC"))
 public class Hemodynamica {
 
     @Id
