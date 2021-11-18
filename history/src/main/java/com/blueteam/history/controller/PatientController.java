@@ -17,7 +17,12 @@ public class PatientController {
 
     private final PatientService patientService;
 
-    @GetMapping
+    @GetMapping("/{id}")
+    public PatientDto getById(@PathVariable("id") long id) {
+
+        return new PatientDto(patientService.findById(id));
+    }
+    @GetMapping()
     public List<PatientDto> listPatiants() {
 
         return patientService.findAll()

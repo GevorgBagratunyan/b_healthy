@@ -11,7 +11,7 @@ public class KtDto {
 
     }
     private Long id;
-    private String conclusion;
+        private String conclusion;
     private LocalDate ktDate;
 
     public KtDto(Kt kt) {

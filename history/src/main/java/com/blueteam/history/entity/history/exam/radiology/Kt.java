@@ -23,4 +23,9 @@ public class Kt {
     @Column(name = "kt_date")
     private LocalDate ktDate;
 
+    @ManyToOne
+    @JoinColumn(name = "radilogy_id")
+    private Radiology radiology;
+
+
 }

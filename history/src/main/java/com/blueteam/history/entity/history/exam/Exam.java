@@ -1,5 +1,6 @@
 package com.blueteam.history.entity.history.exam;
 
+import com.blueteam.history.entity.history.History;
 import com.blueteam.history.entity.history.exam.blood.BloodAnalize;
 import com.blueteam.history.entity.history.exam.radiology.Radiology;
 
@@ -16,7 +17,9 @@ public class Exam {
     @JoinColumn(name = "blood_analize_id")
     private BloodAnalize blood;
 
-    @OneToOne
-    @JoinColumn(name = "radiology_id")
+    @OneToOne(mappedBy = "exam")
     private Radiology radiology;
+
+    @OneToOne(mappedBy = "exam")
+    private History history;
 }

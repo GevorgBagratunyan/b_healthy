@@ -23,6 +23,10 @@ public class KtService {
         ktRepo.save(kt);
     }
 
+    public List<Kt> findByPatientId(long patient) {
+        return ktRepo.getByUserId(patient);
+    }
+
     public List<Kt> findAll() {
         return this.ktRepo.findAll();
     }

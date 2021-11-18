@@ -1,5 +1,7 @@
 package com.blueteam.history.entity.history.exam.radiology;
 
+import com.blueteam.history.entity.history.exam.Exam;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -11,8 +13,7 @@ public class Radiology {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "radilogy_id")
+    @OneToMany(mappedBy = "radiology")
     private List<Kt> kt;
 
     @OneToMany
@@ -22,5 +23,11 @@ public class Radiology {
     @OneToMany
     @JoinColumn(name = "radilogy_id")
     private List<Ultrasound> ultrasound;
+
+
+    @OneToOne
+    @JoinColumn(name = "radiology_id")
+    private Exam exam;
+
 
 }

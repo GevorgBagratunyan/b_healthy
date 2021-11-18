@@ -22,6 +22,9 @@ public class PatientService {
         patientRepo.save(patient);
     }
 
+    public Patient findById(long id){
+        return this.patientRepo.getById(id);
+    }
     public List<Patient> findAll() {
         return this.patientRepo.findAll();
     }

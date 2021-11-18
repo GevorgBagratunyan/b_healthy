@@ -19,10 +19,18 @@ import java.util.stream.Collectors;
 public class KtController {
 
 
-    private final  KtService ktService;
+    private final KtService ktService;
+
+
+    @GetMapping("/patient/{id}")
+    public List<KtDto> getByPatientId(@PathVariable("id") long patientId) {
+        return ktService.findByPatientId(patientId).stream().map(KtDto::new)
+                .collect(Collectors.toList());
+    }
 
     @GetMapping
     public List<KtDto> ktDtoList() {
+
         return ktService.findAll()
                 .stream()
                 .map(KtDto::new)

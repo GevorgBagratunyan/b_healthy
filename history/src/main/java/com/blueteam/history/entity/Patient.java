@@ -19,9 +19,6 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "med_history")
-    private Long medHistoryNumber;
-
     @Column(name = "name")
     private String name;
 
