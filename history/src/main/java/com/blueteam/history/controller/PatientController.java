@@ -3,6 +3,7 @@ package com.blueteam.history.controller;
 import com.blueteam.history.dto.PatientDto;
 import com.blueteam.history.entity.Patient;
 import com.blueteam.history.service.PatientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,10 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/patients")
+@RequiredArgsConstructor
 public class PatientController {
 
-    @Autowired
-    private PatientService patientService;
+    private final PatientService patientService;
 
     @GetMapping
     public List<PatientDto> listPatiants() {
@@ -27,7 +28,6 @@ public class PatientController {
 
     @PostMapping
     public void addNewPatient(@RequestBody PatientDto patientDto) {
-
         Patient patient = patientDto.convertToEntity();
         patientService.add(patient);
 
@@ -36,7 +36,6 @@ public class PatientController {
 
     @PutMapping("/{id}")
     public void update(@RequestBody PatientDto patientDto) {
-//        Patient patient = patientDto.convertToEntity();
         patientService.update(patientDto);
     }
 

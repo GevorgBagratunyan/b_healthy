@@ -19,6 +19,4 @@ public class BloodAnalize {
     @JoinColumn(name = "blood_analize_id")
     private List<BloodGeneral>  bloodGenerals;
 
-
-
 }

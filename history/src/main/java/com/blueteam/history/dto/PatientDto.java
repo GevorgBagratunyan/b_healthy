@@ -3,9 +3,10 @@ package com.blueteam.history.dto;
 import com.blueteam.history.entity.Patient;
 import com.blueteam.history.entity.history.History;
 import com.sun.istack.NotNull;
+import lombok.Data;
 
 import java.time.LocalDate;
-
+@Data
 public class PatientDto {
 
     public PatientDto() {
@@ -17,13 +18,11 @@ public class PatientDto {
         this.name = patient.getName();
         this.birthDate = patient.getBirthDate();
         this.phoneNumber = patient.getPhoneNumber();
-
     }
     private long id;
     @NotNull
     private String name;
     private LocalDate birthDate;
-
     private String phoneNumber;
 
 
@@ -36,35 +35,4 @@ public class PatientDto {
         return patient;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }

@@ -6,6 +6,7 @@ import com.blueteam.history.entity.Patient;
 import com.blueteam.history.entity.history.exam.radiology.Kt;
 import com.blueteam.history.service.PatientService;
 import com.blueteam.history.service.radiologyService.KtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +15,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/kt")
+@RequiredArgsConstructor
 public class KtController {
 
-    @Autowired
-    private KtService ktService;
+
+    private final  KtService ktService;
 
     @GetMapping
     public List<KtDto> ktDtoList() {
@@ -37,6 +39,7 @@ public class KtController {
     public void update(@RequestBody KtDto ktDto) {
         ktService.update(ktDto);
     }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") long id) {
         ktService.delete(id);

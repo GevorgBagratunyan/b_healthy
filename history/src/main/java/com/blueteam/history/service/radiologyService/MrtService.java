@@ -29,7 +29,7 @@ public class MrtService {
         Mrt existingMrt = this.mrtRepo.getById(mrtDto.getId());
 
         existingMrt.setId(mrtDto.getId());
-        existingMrt.setDate(mrtDto.getMrtDate());
+        existingMrt.setMrtDate(mrtDto.getMrtDate());
         existingMrt.setCunclusion(mrtDto.getConclusion());
 
         this.mrtRepo.save(existingMrt);

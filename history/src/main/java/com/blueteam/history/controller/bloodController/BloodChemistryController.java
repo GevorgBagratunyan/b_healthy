@@ -3,6 +3,7 @@ package com.blueteam.history.controller.bloodController;
 import com.blueteam.history.dto.bloodDto.BloodChemistryDto;
 import com.blueteam.history.entity.history.exam.blood.BloodChemistry;
 import com.blueteam.history.service.bloodService.BloodChemistryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bloodChemistry")
+@RequiredArgsConstructor
 public class BloodChemistryController {
 
-    @Autowired
-    private BloodChemistryService bloodChemistryService;
+    private final BloodChemistryService bloodChemistryService;
+
 
     @GetMapping
     public List<BloodChemistryDto> bloodChemistryList() {

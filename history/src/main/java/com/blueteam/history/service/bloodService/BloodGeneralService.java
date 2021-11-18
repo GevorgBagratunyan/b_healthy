@@ -1,10 +1,7 @@
 package com.blueteam.history.service.bloodService;
 
-import com.blueteam.history.dto.PatientDto;
 import com.blueteam.history.dto.bloodDto.BloodGeneralDto;
-import com.blueteam.history.entity.Patient;
 import com.blueteam.history.entity.history.exam.blood.BloodGeneral;
-import com.blueteam.history.repository.PatientRepo;
 import com.blueteam.history.repository.exam.Blood.BloodGeneralRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,14 +29,13 @@ public class BloodGeneralService {
 
         BloodGeneral existingBloodGeneral = this.bloodGeneralRepo.getById(bloodGeneralDto.getId());
 
-        existingBloodGeneral.setId(bloodGeneralDto.getId());
-        existingBloodGeneral.setF_ESR(bloodGeneralDto.getF_ESR());
-        existingBloodGeneral.setM_ESR(bloodGeneralDto.getM_ESR());
-        existingBloodGeneral.setWHITE_BLOOD_CELLS(bloodGeneralDto.getWHITE_BLOOD_CELLS());
-        existingBloodGeneral.setF_RED_BLOOD_CELLS(bloodGeneralDto.getF_RED_BLOOD_CELLS());
-        existingBloodGeneral.setM_RED_BLOOD_CELLS(bloodGeneralDto.getM_RED_BLOOD_CELLS());
-        existingBloodGeneral.setF_HEMOGLOBIN(bloodGeneralDto.getF_HEMOGLOBIN());
-        existingBloodGeneral.setM_HEMOGLOBIN(bloodGeneralDto.getM_HEMOGLOBIN());
+        existingBloodGeneral.setFEsr(bloodGeneralDto.getFEsr());
+        existingBloodGeneral.setMEsr(bloodGeneralDto.getMEsr());
+        existingBloodGeneral.setWhiteBloodCells(bloodGeneralDto.getWhiteBloodCells());
+        existingBloodGeneral.setFRedBloodCells(bloodGeneralDto.getFRedBloodCells());
+        existingBloodGeneral.setMRedBloodCells(bloodGeneralDto.getMRedBloodCells());
+        existingBloodGeneral.setFHemoglobin(bloodGeneralDto.getFHemoglobin());
+        existingBloodGeneral.setMHemoglobin(bloodGeneralDto.getMHemoglobin());
         existingBloodGeneral.setAnalyzedDate(bloodGeneralDto.getAnalyzedDate());
 
         this.bloodGeneralRepo.save(existingBloodGeneral);

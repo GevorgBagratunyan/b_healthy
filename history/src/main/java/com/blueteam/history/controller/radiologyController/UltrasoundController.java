@@ -3,6 +3,7 @@ package com.blueteam.history.controller.radiologyController;
 import com.blueteam.history.dto.radiologyDto.UltrasoundDto;
 import com.blueteam.history.entity.history.exam.radiology.Ultrasound;
 import com.blueteam.history.service.radiologyService.UltrasoundService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +12,10 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ultrasound")
+@RequiredArgsConstructor
 public class UltrasoundController {
 
-    @Autowired
-    private UltrasoundService ultrasoundService;
+    private final UltrasoundService ultrasoundService;
 
     @GetMapping
     public List<UltrasoundDto> ultrasoundDtoList() {

@@ -3,6 +3,7 @@ package com.blueteam.history.service;
 import com.blueteam.history.dto.PatientDto;
 import com.blueteam.history.entity.Patient;
 import com.blueteam.history.repository.PatientRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +13,10 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class PatientService {
 
-    @Autowired
-    private PatientRepo patientRepo;
-
+    private final PatientRepo patientRepo;
 
     public void add(Patient patient) {
         patientRepo.save(patient);

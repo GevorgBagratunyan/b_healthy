@@ -3,7 +3,7 @@ package com.blueteam.history.controller.bloodController;
 import com.blueteam.history.dto.bloodDto.BloodGeneralDto;
 import com.blueteam.history.entity.history.exam.blood.BloodGeneral;
 import com.blueteam.history.service.bloodService.BloodGeneralService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,10 +11,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bloodGeneral")
+@RequiredArgsConstructor
 public class BloodGeneralController {
 
-    @Autowired
-    private BloodGeneralService generalService;
+
+    private final BloodGeneralService generalService;
 
     @GetMapping
     public List<BloodGeneralDto> bloodGeneralDtoList() {
@@ -29,6 +30,7 @@ public class BloodGeneralController {
     public void addNewBloodGeneral(@RequestBody BloodGeneralDto generalDto) {
         BloodGeneral bloodGeneral = generalDto.convertToEntity();
         generalService.add(bloodGeneral);
+
 
     }
 

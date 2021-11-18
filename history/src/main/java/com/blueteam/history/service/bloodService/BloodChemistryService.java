@@ -1,10 +1,7 @@
 package com.blueteam.history.service.bloodService;
 
-import com.blueteam.history.dto.PatientDto;
 import com.blueteam.history.dto.bloodDto.BloodChemistryDto;
-import com.blueteam.history.entity.Patient;
 import com.blueteam.history.entity.history.exam.blood.BloodChemistry;
-import com.blueteam.history.repository.PatientRepo;
 import com.blueteam.history.repository.exam.Blood.BloodChemistryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,14 +29,14 @@ public class BloodChemistryService {
 
         BloodChemistry existingBloodChemitry = this.chemistryRepo.getById(chemistryDto.getId());
 
-        existingBloodChemitry.setUNCONJUGATED_BILIRUBIN(chemistryDto.getUNCONJUGATED_BILIRUBIN());
+        existingBloodChemitry.setUnconjugatedBilirubin(chemistryDto.getUncongjugatedBilirubin());
         existingBloodChemitry.setId(chemistryDto.getId());
-        existingBloodChemitry.setTOTAL_BILIRUBIN(chemistryDto.getTOTAL_BILIRUBIN());
-        existingBloodChemitry.setGLUCOSE(chemistryDto.getGLUCOSE());
-        existingBloodChemitry.setM_CREATININE(chemistryDto.getM_CREATININE());
-        existingBloodChemitry.setF_CREATININE(chemistryDto.getF_CREATININE());
+        existingBloodChemitry.setTotalBilirubin(chemistryDto.getTotalBilirubin());
+        existingBloodChemitry.setGlucose(chemistryDto.getGlucose());
+        existingBloodChemitry.setMCreatinine(chemistryDto.getMCreatinine());
+        existingBloodChemitry.setFCreatinine(chemistryDto.getFCreatinine());
         existingBloodChemitry.setAnalyzedDate(chemistryDto.getAnalyzedDate());
-        existingBloodChemitry.setCONJUGATED_BILIRUBIN(chemistryDto.getCONJUGATED_BILIRUBIN());
+        existingBloodChemitry.setConjugatedBilirubin(chemistryDto.getCongjugatedBilirubin());
 
         this.chemistryRepo.save(existingBloodChemitry);
     }
