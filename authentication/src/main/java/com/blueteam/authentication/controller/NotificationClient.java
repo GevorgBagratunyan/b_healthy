@@ -7,9 +7,9 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class NotificationClient {
     private static final String EMAIL_AUTHENTICATION_API =
-            "http://localhost:8082/notifier/notify/email-authentication";
+            "http://3.17.28.235:5000/notifier/notify/email-authentication";
     private static final String SMS_AUTHENTICATION_API =
-            "http://localhost:8082/notifier/notify/sms-authentication";
+            "http://3.17.28.235:5000/notifier/notify/sms-authentication";
     private static final RestTemplate REST_TEMPLATE = new RestTemplate();
 
 
